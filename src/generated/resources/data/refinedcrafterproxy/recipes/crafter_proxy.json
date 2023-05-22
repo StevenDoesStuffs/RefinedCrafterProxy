@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "a a",
+    "bdc",
+    "a a"
+  ],
+  "key": {
+    "a": {
+      "item": "refinedstorage:quartz_enriched_iron"
+    },
+    "b": {
+      "item": "refinedstorage:improved_processor"
+    },
+    "c": {
+      "item": "refinedstorage:advanced_processor"
+    },
+    "d": {
+      "tag": "refinedstorage:crafter"
+    }
+  },
+  "result": {
+    "item": "refinedcrafterproxy:crafter_proxy"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "refinedcrafterproxy:crafter_proxy_card"
+    ]
+  },
+  "criteria": {
+    "has_part": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "refinedstorage:improved_processor"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "refinedcrafterproxy:crafter_proxy_card"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_part",
+      "has_the_recipe"
+    ]
+  ]
+}

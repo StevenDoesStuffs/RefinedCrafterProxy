@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "aba",
+    " c ",
+    "aba"
+  ],
+  "key": {
+    "a": {
+      "item": "refinedstorage:quartz_enriched_iron"
+    },
+    "b": {
+      "item": "minecraft:paper"
+    },
+    "c": {
+      "item": "refinedstorage:improved_processor"
+    }
+  },
+  "result": {
+    "item": "refinedcrafterproxy:crafter_proxy_card"
+  }
+}

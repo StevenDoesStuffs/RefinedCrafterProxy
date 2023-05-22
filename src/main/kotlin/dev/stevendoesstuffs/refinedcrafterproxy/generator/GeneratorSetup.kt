@@ -14,6 +14,7 @@ object GeneratorSetup {
             generator.addProvider(LanguageGenerator(generator))
         }
         if (event.includeServer()) {
+            generator.addProvider(RecipeGenerator(generator))
             generator.addProvider(LootTableGenerator(generator))
         }
     }
