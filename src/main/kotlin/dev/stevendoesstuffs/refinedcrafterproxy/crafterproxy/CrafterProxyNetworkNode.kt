@@ -64,6 +64,8 @@ class CrafterProxyNetworkNode(world: World, pos: BlockPos?) : NetworkNode(world,
         private val DEFAULT_NAME: ITextComponent =
             TranslationTextComponent("block.$MODID.$CRAFTER_PROXY_ID")
         private val ID = ResourceLocation(MODID, CRAFTER_PROXY_ID)
+        private const val CARD_UPDATE_CLEAR_DELAY = 1
+        private const val CARD_UPDATE_SET_DELAY = 4
     }
 
     inner class CardItemHandler : BaseItemHandler(1) {
@@ -90,15 +92,17 @@ class CrafterProxyNetworkNode(world: World, pos: BlockPos?) : NetworkNode(world,
         .addValidator { stack -> stack.item == CRAFTER_PROXY_CARD }
         .addListener(NetworkNodeInventoryListener(this))
         .addListener { _: BaseItemHandler?, _: Int, reading: Boolean ->
-            if (!reading && network != null) {
-                network!!.craftingManager.invalidate()
+            if (!reading) {
+                cardUpdateTick = Int.MIN_VALUE
+                cardUpdateStack = ItemStack(Items.AIR)
+                if (network != null) network!!.craftingManager.invalidate()
             }
         } as CardItemHandler
 
     private val upgrades = UpgradeItemHandler(4, UpgradeItem.Type.SPEED)
         .addListener(NetworkNodeInventoryListener(this)) as UpgradeItemHandler
 
-    var cardUpdateTick = -1
+    var cardUpdateTick = Int.MIN_VALUE
     var cardUpdateStack = ItemStack(Items.AIR)
 
     private var visited = false
@@ -126,7 +130,12 @@ class CrafterProxyNetworkNode(world: World, pos: BlockPos?) : NetworkNode(world,
             }
         }
 
-        if (ticks == cardUpdateTick) {
+        if (ticks == cardUpdateTick + CARD_UPDATE_CLEAR_DELAY) {
+            val card = cardUpdateStack.copy()
+            card.removeTagKey(CrafterProxyCardItem.STATUS)
+            if (cardInventory.overrideItem(card))
+                markDirty()
+        } else if (ticks == cardUpdateTick + CARD_UPDATE_CLEAR_DELAY + CARD_UPDATE_SET_DELAY) {
             if (cardInventory.overrideItem(cardUpdateStack))
                 markDirty()
         }
@@ -240,7 +249,7 @@ class CrafterProxyNetworkNode(world: World, pos: BlockPos?) : NetworkNode(world,
         val card = cardInventory.getStackInSlot(0)
         if (card.item != CRAFTER_PROXY_CARD) return emptyList()
 
-        val node = CrafterProxyCardItem.getNode(world.server!!, card)
+        val node = CRAFTER_PROXY_CARD.getNode(world.server!!, card)
         var res: List<ICraftingPattern> = emptyList()
         val msg = if (node == null || node.network != network) {
             "disconnected"
@@ -257,15 +266,15 @@ class CrafterProxyNetworkNode(world: World, pos: BlockPos?) : NetworkNode(world,
             cardCopy
         } else card
 
-        cardUpdateTick = ticks + 2
+        cardUpdateTick = ticks
         cardUpdateStack = newCard
 
         return res
     }
 
-    override fun getPatternInventory(): IItemHandlerModifiable {
-        // this is only used for the crafting manager
-        return cardInventory
+    override fun getPatternInventory(): IItemHandlerModifiable? {
+        // crafting manager does not play well with non-pattern items I think
+        return null
     }
 
     override fun getName(): ITextComponent? {

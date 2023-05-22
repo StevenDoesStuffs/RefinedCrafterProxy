@@ -26,52 +26,45 @@ class CrafterProxyCardItem : Item(Properties().stacksTo(1).tab(CRAFTER_PROXY_TAB
         const val BOUND_Y = "BoundY"
         const val BOUND_Z = "BoundZ"
         const val STATUS = "Status"
+    }
 
-        @JvmStatic
-        fun getPos(stack: ItemStack): Pair<RegistryKey<World>, BlockPos>? {
-            val tag = stack.tag
-            if (stack.item != Registration.CRAFTER_PROXY_CARD || tag == null) return null
+    fun getPos(stack: ItemStack): Pair<RegistryKey<World>, BlockPos>? {
+        val tag = stack.tag
+        if (stack.item != Registration.CRAFTER_PROXY_CARD || tag == null ||
+            !tag.contains(BOUND_DIM) || !tag.contains(BOUND_X) || !tag.contains(BOUND_Y) || !tag.contains(BOUND_Z)
+        ) return null
 
-            val dimName = tag.getString(BOUND_DIM)
-            val x = tag.getInt(BOUND_X)
-            val y = tag.getInt(BOUND_Y)
-            val z = tag.getInt(BOUND_Z)
+        val dimName = tag.getString(BOUND_DIM)
+        val x = tag.getInt(BOUND_X)
+        val y = tag.getInt(BOUND_Y)
+        val z = tag.getInt(BOUND_Z)
 
-            val pos = BlockPos(x, y, z)
-            val dimKey = RegistryKey.create(Registry.DIMENSION_REGISTRY, ResourceLocation(dimName)) ?: return null
+        val pos = BlockPos(x, y, z)
+        val dimKey = RegistryKey.create(Registry.DIMENSION_REGISTRY, ResourceLocation(dimName)) ?: return null
 
-            return Pair(dimKey, pos)
-        }
+        return Pair(dimKey, pos)
+    }
 
-        @JvmStatic
-        fun setPos(stack: ItemStack, world: World, pos: BlockPos): Boolean {
-            if (stack.item != Registration.CRAFTER_PROXY_CARD) return false
-            val compound = stack.orCreateTag
+    fun setPos(stack: ItemStack, world: World, pos: BlockPos): Boolean {
+        if (stack.item != Registration.CRAFTER_PROXY_CARD) return false
+        val compound = stack.orCreateTag
 
-            val dimStr = world.dimension().location().toString()
-            if (compound.getString(BOUND_DIM) == dimStr &&
-                compound.getInt(BOUND_X) == pos.x &&
-                compound.getInt(BOUND_Y) == pos.y &&
-                compound.getInt(BOUND_Z) == pos.z
-            ) return false
+        val dimStr = world.dimension().location().toString()
+        compound.putString(BOUND_DIM, dimStr)
+        compound.putInt(BOUND_X, pos.x)
+        compound.putInt(BOUND_Y, pos.y)
+        compound.putInt(BOUND_Z, pos.z)
 
-            compound.putString(BOUND_DIM, dimStr)
-            compound.putInt(BOUND_X, pos.x)
-            compound.putInt(BOUND_Y, pos.y)
-            compound.putInt(BOUND_Z, pos.z)
+        return true
+    }
 
-            return true
-        }
+    fun getNode(server: MinecraftServer, stack: ItemStack): INetworkNode? {
+        val (dimKey, pos) = getPos(stack) ?: return null
 
-        @JvmStatic
-        fun getNode(server: MinecraftServer, stack: ItemStack): INetworkNode? {
-            val (dimKey, pos) = getPos(stack) ?: return null
-
-            val dim = server.getLevel(dimKey) ?: return null
-            val node = API.instance().getNetworkNodeManager(dim).getNode(pos)
-            if (node == null || !node.isActive || node.network == null) return null
-            return node
-        }
+        val dim = server.getLevel(dimKey) ?: return null
+        val node = API.instance().getNetworkNodeManager(dim).getNode(pos)
+        if (node == null || !node.isActive || node.network == null) return null
+        return node
     }
 
     override fun useOn(context: ItemUseContext): ActionResultType {
