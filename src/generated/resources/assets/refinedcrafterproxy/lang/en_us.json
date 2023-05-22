@@ -1,0 +1,11 @@
+{
+  "block.refinedcrafterproxy.crafter_proxy": "Crafter Proxy",
+  "item.refinedcrafterproxy.crafter_proxy_card": "Crafter Proxy Link Card",
+  "refinedcrafterproxy.crafter_proxy_card.clear": "Selection cleared",
+  "refinedcrafterproxy.crafter_proxy_card.select": "Block selected",
+  "refinedcrafterproxy.crafter_proxy_card.status.connected": "Connected",
+  "refinedcrafterproxy.crafter_proxy_card.status.disconnected": "Disconnected",
+  "refinedcrafterproxy.crafter_proxy_card.status.invalid_crafter": "Invalid target crafter",
+  "refinedcrafterproxy.crafter_proxy_card.status.prefix": "Last status: ",
+  "refinedcrafterproxy.crafter_proxy_card.tooltip": "Linked to a block in the %4$s at (%1$d, %2$d, %3$d)"
+}

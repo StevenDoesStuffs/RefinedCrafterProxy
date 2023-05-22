@@ -1,0 +1,18 @@
+{
+    "parent": "refinedstorage:block/cube_cutout",
+    "textures": {
+        "particle": "refinedcrafterproxy:block/crafter_proxy/side",
+        "east": "refinedcrafterproxy:block/crafter_proxy/side",
+        "south": "refinedcrafterproxy:block/crafter_proxy/side",
+        "west": "refinedcrafterproxy:block/crafter_proxy/side",
+        "up": "refinedcrafterproxy:block/crafter_proxy/top",
+        "down": "refinedcrafterproxy:block/crafter_proxy/bottom",
+        "north": "refinedcrafterproxy:block/crafter_proxy/side",
+        "cutout_down": "refinedcrafterproxy:block/crafter_proxy/bottom",
+        "cutout_east": "refinedcrafterproxy:block/crafter_proxy/cutouts/side_connected",
+        "cutout_west": "refinedcrafterproxy:block/crafter_proxy/cutouts/side_connected",
+        "cutout_south": "refinedcrafterproxy:block/crafter_proxy/cutouts/side_connected",
+        "cutout_north": "refinedcrafterproxy:block/crafter_proxy/cutouts/side_connected",
+        "cutout_up": "refinedcrafterproxy:block/crafter_proxy/cutouts/top_connected"
+    }
+}

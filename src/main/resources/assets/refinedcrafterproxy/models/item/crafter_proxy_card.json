@@ -1,0 +1,6 @@
+{
+    "parent": "item/generated",
+    "textures": {
+        "layer0": "refinedcrafterproxy:item/crafter_proxy_card"
+    }
+}

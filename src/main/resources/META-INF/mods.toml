@@ -1,0 +1,25 @@
+modLoader="kotlinforforge"
+loaderVersion="[1.16,)"
+license='LGPL'
+
+[[mods]]
+modId="refinedcrafterproxy"
+version="${file.jarVersion}"
+displayName="Refined Crafter Proxy"
+credits=""
+authors="StevenDoesStuffs"
+description='''
+Allows multiple crafters to use the same pattern set.
+'''
+[[dependencies.refinedcrafterproxy]]
+    modId="forge"
+    mandatory=true
+    versionRange="[36,)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.refinedcrafterproxy]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.16.5]"
+    ordering="NONE"
+    side="BOTH"
