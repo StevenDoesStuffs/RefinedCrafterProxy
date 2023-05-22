@@ -13,6 +13,8 @@ To link a crafter proxy, craft a **crafter proxy card**,
 and shift right-click on a block to bind that block to the card.
 Then place the card inside the crafter proxy.
 
+Note: the proxy will not show up on the crafting manager.
+
 ## Downloads
 
 Available on [Modrinth](https://modrinth.com/mod/refinedcrafterproxy)
@@ -26,7 +28,7 @@ This project is licensed under the AGPLv3. See LICENSE.
 
 Special thanks to Refined Mods for [Refined Storage](https://refinedmods.com/refined-storage/), and
 
-- Edivad99 for [Extra Storage](https://github.com/Edivad99/ExtraStorage/)
+- Edivad99 for [Extra Storage](https://github.com/Edivad99/ExtraStorage/),
 - SuperMartijn642 for [Entangled](https://github.com/SuperMartijn642/Entangled),
 
 which I referenced while coding the crafter proxy block and the crafter proxy card respectively. 
