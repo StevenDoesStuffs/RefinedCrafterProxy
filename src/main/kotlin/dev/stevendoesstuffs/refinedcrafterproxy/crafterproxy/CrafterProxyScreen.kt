@@ -36,7 +36,7 @@ class CrafterProxyScreen(container: CrafterProxyContainer?, inventory: PlayerInv
 
 class CrafterProxyTileDataParameterClientListener : TileDataParameterClientListener<Boolean> {
     override fun onChanged(initial: Boolean, hasRoot: Boolean) {
-        if (java.lang.Boolean.FALSE == hasRoot) {
+        if (!hasRoot) {
             BaseScreen.executeLater(
                 CrafterProxyScreen::class.java
             ) { gui: CrafterProxyScreen ->

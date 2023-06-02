@@ -41,7 +41,7 @@ class CrafterProxyBlock : NetworkNodeBlock(BlockUtils.DEFAULT_ROCK_PROPERTIES) {
         if (!worldIn.isClientSide()) {
             val tile: TileEntity? = worldIn.getBlockEntity(pos)
             if ((tile is CrafterProxyBlockEntity) && stack.hasCustomHoverName()) {
-                tile.node.setDisplayName(stack.displayName)
+                tile.node.setDisplayName(stack.hoverName)
                 tile.node.markDirty()
             }
         }
