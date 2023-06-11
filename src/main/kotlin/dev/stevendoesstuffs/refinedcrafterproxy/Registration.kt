@@ -1,15 +1,10 @@
 package dev.stevendoesstuffs.refinedcrafterproxy
 
-import com.refinedmods.refinedstorage.item.blockitem.BaseBlockItem
 import com.refinedmods.refinedstorage.render.BakedModelOverrideRegistry
 import dev.stevendoesstuffs.refinedcrafterproxy.RefinedCrafterProxy.MODID
-import dev.stevendoesstuffs.refinedcrafterproxy.crafterproxy.CrafterProxyBlock
-import dev.stevendoesstuffs.refinedcrafterproxy.crafterproxy.CrafterProxyBlockEntity
-import dev.stevendoesstuffs.refinedcrafterproxy.crafterproxy.CrafterProxyContainer
-import dev.stevendoesstuffs.refinedcrafterproxy.crafterproxy.CrafterProxyLootFunction
+import dev.stevendoesstuffs.refinedcrafterproxy.crafterproxy.*
 import dev.stevendoesstuffs.refinedcrafterproxy.crafterproxycard.CrafterProxyCardItem
 import net.minecraft.inventory.container.ContainerType
-import net.minecraft.item.Item
 import net.minecraft.item.ItemGroup
 import net.minecraft.item.ItemStack
 import net.minecraft.loot.LootFunctionType
@@ -41,7 +36,7 @@ object Registration {
     }
 
     val CRAFTER_PROXY_BLOCK_ITEM by ITEMS_REGISTRY.registerObject(CRAFTER_PROXY_ID) {
-        BaseBlockItem(CRAFTER_PROXY_BLOCK, Item.Properties().stacksTo(64).tab(CRAFTER_PROXY_TAB))
+        CrafterProxyBlockItem()
     }
 
     val CRAFTER_PROXY_BLOCK_ENTITY: TileEntityType<CrafterProxyBlockEntity> by BLOCK_ENTITIES_REGISTRY.registerObject(
@@ -85,7 +80,7 @@ object Registration {
         )
     }
 
-    val CRAFTER_PROXY_TAB: ItemGroup = object : ItemGroup(MODID + "_tab") {
+    val CRAFTER_PROXY_TAB: ItemGroup = object : ItemGroup("${MODID}_tab") {
         override fun makeIcon(): ItemStack {
             return ItemStack(CRAFTER_PROXY_CARD)
         }

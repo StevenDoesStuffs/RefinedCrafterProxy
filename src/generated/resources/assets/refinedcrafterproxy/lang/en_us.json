@@ -1,6 +1,7 @@
 {
   "block.refinedcrafterproxy.crafter_proxy": "Crafter Proxy",
   "item.refinedcrafterproxy.crafter_proxy_card": "Crafter Proxy Link Card",
+  "itemGroup.refinedcrafterproxy_tab": "Refined Crafter Proxy",
   "refinedcrafterproxy.crafter_proxy_card.clear": "Selection cleared",
   "refinedcrafterproxy.crafter_proxy_card.select": "Block selected",
   "refinedcrafterproxy.crafter_proxy_card.status.connected": "Connected",

@@ -3,6 +3,7 @@ package dev.stevendoesstuffs.refinedcrafterproxy.crafterproxy
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonObject
 import dev.stevendoesstuffs.refinedcrafterproxy.Registration
+import dev.stevendoesstuffs.refinedcrafterproxy.crafterproxy.CrafterProxyNetworkNode.Companion.NBT_TIER
 import net.minecraft.item.ItemStack
 import net.minecraft.loot.LootContext
 import net.minecraft.loot.LootFunction
@@ -24,6 +25,7 @@ class CrafterProxyLootFunction private constructor(conditions: Array<out ILootCo
         if (removedNode.getDisplayName() != null) {
             stack.setHoverName(removedNode.getDisplayName())
         }
+        removedNode.tier?.let { stack.orCreateTag.putString(NBT_TIER, it) }
         return stack
     }
 

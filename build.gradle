@@ -15,7 +15,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'kotlin'
 apply plugin: 'kotlinx-serialization'
 
-version = '1.0.0'
+version = '1.1.0'
 group = 'dev.stevendoesstuffs.refinedcrafterproxy'
 archivesBaseName = 'refinedcrafterproxy'
 
@@ -90,6 +90,7 @@ dependencies {
 
     implementation fg.deobf("com.refinedmods:refinedstorage:${rs_version}")
 
+    compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}:api")
     runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}:${jei_version}")
 
     implementation "thedarkcolour:kotlinforforge:${kotlin_for_forge_version}"

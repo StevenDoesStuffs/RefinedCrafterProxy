@@ -21,5 +21,7 @@ class LanguageGenerator(gen: DataGenerator) : LanguageProvider(gen, MODID, "en_u
         add("$MODID.$CRAFTER_PROXY_CARD_ID.status.connected", "Connected")
 
         add(Registration.CRAFTER_PROXY_BLOCK_ITEM, "Crafter Proxy")
+
+        add("itemGroup.${MODID}_tab", "Refined Crafter Proxy")
     }
 }

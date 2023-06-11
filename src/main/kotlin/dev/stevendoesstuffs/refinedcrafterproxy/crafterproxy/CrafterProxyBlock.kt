@@ -6,6 +6,7 @@ import com.refinedmods.refinedstorage.block.NetworkNodeBlock
 import com.refinedmods.refinedstorage.container.factory.PositionalTileContainerProvider
 import com.refinedmods.refinedstorage.util.BlockUtils
 import com.refinedmods.refinedstorage.util.NetworkUtils
+import dev.stevendoesstuffs.refinedcrafterproxy.crafterproxy.CrafterProxyNetworkNode.Companion.NBT_TIER
 import net.minecraft.block.BlockState
 import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.player.PlayerEntity
@@ -40,9 +41,17 @@ class CrafterProxyBlock : NetworkNodeBlock(BlockUtils.DEFAULT_ROCK_PROPERTIES) {
         super.setPlacedBy(worldIn, pos, state, placer, stack)
         if (!worldIn.isClientSide()) {
             val tile: TileEntity? = worldIn.getBlockEntity(pos)
-            if ((tile is CrafterProxyBlockEntity) && stack.hasCustomHoverName()) {
-                tile.node.setDisplayName(stack.hoverName)
-                tile.node.markDirty()
+            if (tile is CrafterProxyBlockEntity) {
+                if (stack.hasCustomHoverName()) {
+                    tile.node.setDisplayName(stack.hoverName)
+                    tile.node.markDirty()
+                }
+                
+                val tag = stack.tag
+                if (tag?.contains(NBT_TIER) == true) {
+                    tile.node.tier = tag.getString(NBT_TIER)
+                    tile.node.markDirty()
+                }
             }
         }
     }

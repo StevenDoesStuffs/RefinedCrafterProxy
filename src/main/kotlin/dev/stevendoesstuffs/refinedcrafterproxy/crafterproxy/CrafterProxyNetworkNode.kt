@@ -1,6 +1,5 @@
 package dev.stevendoesstuffs.refinedcrafterproxy.crafterproxy
 
-import com.refinedmods.refinedstorage.RS
 import com.refinedmods.refinedstorage.api.autocrafting.ICraftingPattern
 import com.refinedmods.refinedstorage.api.autocrafting.ICraftingPatternContainer
 import com.refinedmods.refinedstorage.api.autocrafting.task.ICraftingTask
@@ -14,6 +13,7 @@ import com.refinedmods.refinedstorage.inventory.listener.NetworkNodeInventoryLis
 import com.refinedmods.refinedstorage.item.UpgradeItem
 import com.refinedmods.refinedstorage.util.StackUtils
 import com.refinedmods.refinedstorage.util.WorldUtils
+import dev.stevendoesstuffs.refinedcrafterproxy.Config
 import dev.stevendoesstuffs.refinedcrafterproxy.RefinedCrafterProxy.MODID
 import dev.stevendoesstuffs.refinedcrafterproxy.Registration.CRAFTER_PROXY_CARD
 import dev.stevendoesstuffs.refinedcrafterproxy.Registration.CRAFTER_PROXY_ID
@@ -27,6 +27,8 @@ import net.minecraft.util.INameable
 import net.minecraft.util.ResourceLocation
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.text.ITextComponent
+import net.minecraft.util.text.StringTextComponent
+import net.minecraft.util.text.TextComponentUtils
 import net.minecraft.util.text.TranslationTextComponent
 import net.minecraft.world.World
 import net.minecraft.world.server.ServerWorld
@@ -35,7 +37,7 @@ import net.minecraftforge.items.IItemHandler
 import net.minecraftforge.items.IItemHandlerModifiable
 import net.minecraftforge.items.wrapper.CombinedInvWrapper
 import java.util.*
-
+import kotlin.math.roundToInt
 
 class CrafterProxyNetworkNode(world: World, pos: BlockPos?) : NetworkNode(world, pos),
     ICraftingPatternContainer {
@@ -56,6 +58,7 @@ class CrafterProxyNetworkNode(world: World, pos: BlockPos?) : NetworkNode(world,
     }
 
     companion object {
+        const val NBT_TIER = "Tier"
         private const val NBT_DISPLAY_NAME = "DisplayName"
         private const val NBT_UUID = "CrafterUuid"
         private const val NBT_MODE = "Mode"
@@ -102,8 +105,11 @@ class CrafterProxyNetworkNode(world: World, pos: BlockPos?) : NetworkNode(world,
     private val upgrades = UpgradeItemHandler(4, UpgradeItem.Type.SPEED)
         .addListener(NetworkNodeInventoryListener(this)) as UpgradeItemHandler
 
-    var cardUpdateTick = Int.MIN_VALUE
-    var cardUpdateStack = ItemStack(Items.AIR)
+    var tier: String? = null
+
+    private var cardUpdateTick = Int.MIN_VALUE
+    private var cardUpdateStack = ItemStack(Items.AIR)
+    private var numPatterns = 0
 
     private var visited = false
     private var displayName: ITextComponent? = null
@@ -114,7 +120,9 @@ class CrafterProxyNetworkNode(world: World, pos: BlockPos?) : NetworkNode(world,
     private var wasPowered = false
 
     override fun getEnergyUsage(): Int {
-        return 4 * RS.SERVER_CONFIG.crafter.usage + upgrades.energyUsage
+        return Config.CONFIG.getCrafterEnergyUsage(tier) +
+                Config.CONFIG.getPatternsEnergyUsage(tier) * numPatterns +
+                (Config.CONFIG.getUpgradesEnergyMultiplier(tier) * upgrades.energyUsage).roundToInt()
     }
 
     override fun update() {
@@ -183,6 +191,9 @@ class CrafterProxyNetworkNode(world: World, pos: BlockPos?) : NetworkNode(world,
         if (tag.contains(NBT_WAS_POWERED)) {
             wasPowered = tag.getBoolean(NBT_WAS_POWERED)
         }
+        if (tag.contains(NBT_TIER)) {
+            tier = tag.getString(NBT_TIER)
+        }
     }
 
     override fun getId(): ResourceLocation {
@@ -198,29 +209,19 @@ class CrafterProxyNetworkNode(world: World, pos: BlockPos?) : NetworkNode(world,
         tag.putInt(NBT_MODE, mode.ordinal)
         tag.putBoolean(NBT_LOCKED, locked)
         tag.putBoolean(NBT_WAS_POWERED, wasPowered)
+        tier?.let { tag.putString(NBT_TIER, it) }
         return tag
     }
 
     override fun getUpdateInterval(): Int {
-        return when (upgrades.getUpgradeCount(UpgradeItem.Type.SPEED)) {
-            0 -> 10
-            1 -> 8
-            2 -> 6
-            3 -> 4
-            4 -> 2
-            else -> 0
-        }
+        return Config.CONFIG.getUpdateInterval(tier, upgrades.getUpgradeCount(UpgradeItem.Type.SPEED))
     }
 
     override fun getMaximumSuccessfulCraftingUpdates(): Int {
-        return when (upgrades.getUpgradeCount(UpgradeItem.Type.SPEED)) {
-            0 -> 1
-            1 -> 2
-            2 -> 3
-            3 -> 4
-            4 -> 5
-            else -> 1
-        }
+        return Config.CONFIG.getMaximumSuccessfulCraftingUpdates(
+            tier,
+            upgrades.getUpgradeCount(UpgradeItem.Type.SPEED)
+        )
     }
 
     override fun getConnectedInventory(): IItemHandler? {
@@ -247,7 +248,10 @@ class CrafterProxyNetworkNode(world: World, pos: BlockPos?) : NetworkNode(world,
 
     override fun getPatterns(): List<ICraftingPattern> {
         val card = cardInventory.getStackInSlot(0)
-        if (card.item != CRAFTER_PROXY_CARD) return emptyList()
+        if (card.item != CRAFTER_PROXY_CARD) {
+            numPatterns = 0
+            return emptyList()
+        }
 
         val node = CRAFTER_PROXY_CARD.getNode(world.server!!, card)
         var res: List<ICraftingPattern> = emptyList()
@@ -268,6 +272,7 @@ class CrafterProxyNetworkNode(world: World, pos: BlockPos?) : NetworkNode(world,
 
         cardUpdateTick = ticks
         cardUpdateStack = newCard
+        numPatterns = res.size
 
         return res
     }
@@ -277,17 +282,28 @@ class CrafterProxyNetworkNode(world: World, pos: BlockPos?) : NetworkNode(world,
         return null
     }
 
-    override fun getName(): ITextComponent? {
-        if (displayName != null) {
-            return displayName
+    override fun getName(): ITextComponent {
+        fun getNameInternal(): ITextComponent {
+            displayName?.let { return it }
+
+            val facing = connectedTile
+            if (facing is INameable) {
+                return (facing as INameable).name
+            }
+
+            return if (facing != null) {
+                TranslationTextComponent(world.getBlockState(facing.blockPos).block.descriptionId)
+            } else DEFAULT_NAME
         }
-        val facing = connectedTile
-        if (facing is INameable) {
-            return (facing as INameable).name
+
+        val name = getNameInternal()
+        Config.CONFIG.getDisplayName(tier)?.let {
+            return StringTextComponent("")
+                .append(name)
+                .append(StringTextComponent(" "))
+                .append(TextComponentUtils.wrapInSquareBrackets(it))
         }
-        return if (facing != null) {
-            TranslationTextComponent(world.getBlockState(facing.blockPos).block.descriptionId)
-        } else DEFAULT_NAME
+        return name
     }
 
     fun setDisplayName(displayName: ITextComponent?) {
