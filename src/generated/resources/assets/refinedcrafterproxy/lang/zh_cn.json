@@ -1,0 +1,12 @@
+{
+  "block.refinedcrafterproxy.crafter_proxy": "装配室代理",
+  "item.refinedcrafterproxy.crafter_proxy_card": "装配室代理连接卡",
+  "itemGroup.refinedcrafterproxy_tab": "精致存储装配室代理",
+  "refinedcrafterproxy.crafter_proxy_card.clear": "选择已清除",
+  "refinedcrafterproxy.crafter_proxy_card.select": "已选择方块",
+  "refinedcrafterproxy.crafter_proxy_card.status.connected": "已连接",
+  "refinedcrafterproxy.crafter_proxy_card.status.disconnected": "拒绝连接",
+  "refinedcrafterproxy.crafter_proxy_card.status.invalid_crafter": "无效装配室目标",
+  "refinedcrafterproxy.crafter_proxy_card.status.prefix": "上次状态: ",
+  "refinedcrafterproxy.crafter_proxy_card.tooltip": "连接一个方块在 %4$s at (%1$d, %2$d, %3$d)"
+}
