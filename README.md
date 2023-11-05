@@ -13,7 +13,13 @@ To link a crafter proxy, craft a **crafter proxy card**,
 and shift right-click on a block to bind that block to the card.
 Then place the card inside the crafter proxy.
 
-Note: the proxy will not show up on the crafting manager.
+Notes: 
+- The proxy will not show up on the crafting manager.
+- Refined Storage's load balancing algorithm will feed more ingredients to a crafter with more speed upgrades. 
+  If your items aren't being distributed evenly, this may be why. 
+- For modpack creators: if you have a mod like [Extra Storage](https://github.com/Edivad99/ExtraStorage/) which adds crafters with custom performance characteristics,
+  you can add proxy variants of those crafters in the RefinedCrafterProxy config in order to match the speed for proper load balancing. 
+  These will not have crafting recipes by default. 
 
 ## Downloads
 
