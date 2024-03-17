@@ -12,7 +12,6 @@ import net.minecraft.world.item.Items
 
 class RecipeGenerator(gen: DataGenerator) : RecipeProvider(gen) {
 
-    // definitely not shapeless
     override fun buildCraftingRecipes(consumer: Consumer<FinishedRecipe>) {
         val improvedProcessor = RSItems.PROCESSORS[ProcessorItem.Type.IMPROVED]!!.get()
         val advancedProcessor = RSItems.PROCESSORS[ProcessorItem.Type.ADVANCED]!!.get()

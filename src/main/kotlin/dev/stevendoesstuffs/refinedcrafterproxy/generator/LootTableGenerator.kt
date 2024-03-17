@@ -2,7 +2,7 @@ package dev.stevendoesstuffs.refinedcrafterproxy.generator
 
 import com.mojang.datafixers.util.Pair
 import dev.stevendoesstuffs.refinedcrafterproxy.Registration
-import dev.stevendoesstuffs.refinedcrafterproxy.crafterproxy.CrafterProxyLootItemFunction
+import dev.stevendoesstuffs.refinedcrafterproxy.crafterproxy.CrafterProxyLootFunction
 import java.util.function.BiConsumer
 import java.util.function.Consumer
 import java.util.function.Supplier
@@ -25,7 +25,7 @@ class LootTableGenerator(gen: DataGenerator) : LootTableProvider(gen) {
                             Supplier<Consumer<BiConsumer<ResourceLocation, LootTable.Builder>>>,
                             LootContextParamSet>> {
         return mutableListOf(
-                Pair.of(Supplier { RefinedCrafterProxyBlockLoot() }, LootContextParamSets.BLOCK)
+                Pair.of(Supplier { CrafterProxyBlockLoot() }, LootContextParamSets.BLOCK)
         )
     }
 
@@ -38,10 +38,10 @@ class LootTableGenerator(gen: DataGenerator) : LootTableProvider(gen) {
         return "Refined Crafter Proxy Loot Tables"
     }
 
-    private class RefinedCrafterProxyBlockLoot : BlockLoot() {
+    private class CrafterProxyBlockLoot : BlockLoot() {
         override fun addTables() {
             val block = Registration.CRAFTER_PROXY_BLOCK
-            val builder = CrafterProxyLootItemFunction.builder()
+            val builder = CrafterProxyLootFunction.builder()
             add(
                     block,
                     LootTable.lootTable()

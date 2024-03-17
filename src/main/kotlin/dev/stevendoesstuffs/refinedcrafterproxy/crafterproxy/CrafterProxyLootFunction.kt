@@ -11,12 +11,12 @@ import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition
 
-class CrafterProxyLootItemFunction private constructor(conditions: Array<out LootItemCondition>) :
+class CrafterProxyLootFunction private constructor(conditions: Array<out LootItemCondition>) :
         LootItemConditionalFunction(conditions) {
 
     companion object {
         fun builder(): Builder<*> {
-            return simpleBuilder { conditions -> CrafterProxyLootItemFunction(conditions) }
+            return simpleBuilder { conditions -> CrafterProxyLootFunction(conditions) }
         }
     }
 
@@ -34,13 +34,13 @@ class CrafterProxyLootItemFunction private constructor(conditions: Array<out Loo
         return Registration.CRAFTER_PROXY_LOOT_FUNCTION
     }
 
-    class Serializer : LootItemConditionalFunction.Serializer<CrafterProxyLootItemFunction?>() {
+    class Serializer : LootItemConditionalFunction.Serializer<CrafterProxyLootFunction?>() {
         override fun deserialize(
                 obj: JsonObject,
                 deserializationContext: JsonDeserializationContext,
                 conditions: Array<out LootItemCondition>
-        ): CrafterProxyLootItemFunction {
-            return CrafterProxyLootItemFunction(conditions)
+        ): CrafterProxyLootFunction {
+            return CrafterProxyLootFunction(conditions)
         }
     }
 }

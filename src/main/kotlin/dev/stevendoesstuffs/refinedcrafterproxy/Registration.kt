@@ -21,9 +21,8 @@ object Registration {
     val BLOCKS_REGISTRY = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID)
     val BLOCK_ENTITIES_REGISTRY = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, MODID)
     val CONTAINERS_REGISTRY = DeferredRegister.create(ForgeRegistries.CONTAINERS, MODID)
-    val LOOT_ITEM_FUNCTIONS_REGISTRY =
-            DeferredRegister.create(Registry.LOOT_FUNCTION_REGISTRY, MODID)
-    val bakedModelOverrideRegistry = BakedModelOverrideRegistry()
+    val LOOT_FUNCTIONS_REGISTRY = DeferredRegister.create(Registry.LOOT_FUNCTION_REGISTRY, MODID)
+    val BAKED_MODEL_OVERRIDE_REGISTRY = BakedModelOverrideRegistry()
 
     const val CRAFTER_PROXY_ID = "crafter_proxy"
     const val CRAFTER_PROXY_CARD_ID = "crafter_proxy_card"
@@ -60,8 +59,8 @@ object Registration {
             }
 
     val CRAFTER_PROXY_LOOT_FUNCTION by
-            LOOT_ITEM_FUNCTIONS_REGISTRY.registerObject(CRAFTER_PROXY_ID) {
-                LootItemFunctionType(CrafterProxyLootItemFunction.Serializer())
+            LOOT_FUNCTIONS_REGISTRY.registerObject(CRAFTER_PROXY_ID) {
+                LootItemFunctionType(CrafterProxyLootFunction.Serializer())
             }
 
     fun registerAll() {
@@ -69,7 +68,7 @@ object Registration {
         BLOCKS_REGISTRY.register(MOD_BUS)
         BLOCK_ENTITIES_REGISTRY.register(MOD_BUS)
         CONTAINERS_REGISTRY.register(MOD_BUS)
-        LOOT_ITEM_FUNCTIONS_REGISTRY.register(MOD_BUS)
+        LOOT_FUNCTIONS_REGISTRY.register(MOD_BUS)
     }
 
     val CRAFTER_PROXY_TAB: CreativeModeTab =

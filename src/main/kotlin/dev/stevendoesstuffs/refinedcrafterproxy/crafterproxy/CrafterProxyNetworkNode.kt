@@ -268,7 +268,7 @@ class CrafterProxyNetworkNode(level: Level, pos: BlockPos?) :
         val msg =
                 if (node == null || node.network != network) {
                     "disconnected"
-                } else if (node !is ICraftingPatternContainer) {
+                } else if (node !is ICraftingPatternContainer || node is CrafterProxyNetworkNode) {
                     "invalid_crafter"
                 } else {
                     res = node.patterns
@@ -410,5 +410,17 @@ class CrafterProxyNetworkNode(level: Level, pos: BlockPos?) :
             locked = true
             markDirty()
         }
+    }
+
+    override fun getItemStack(): ItemStack {
+        val itemstack = super.getItemStack()
+        Config.CONFIG.getDisplayName(tier)?.let {
+            itemstack.hoverName =
+                    TextComponent("")
+                            .append(DEFAULT_NAME)
+                            .append(TextComponent(" "))
+                            .append(ComponentUtils.wrapInSquareBrackets(it))
+        }
+        return itemstack
     }
 }

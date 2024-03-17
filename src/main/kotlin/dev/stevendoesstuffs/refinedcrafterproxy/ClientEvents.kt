@@ -20,7 +20,7 @@ object ClientEvents {
         }
         ItemBlockRenderTypes.setRenderLayer(Registration.CRAFTER_PROXY_BLOCK, RenderType.cutout())
         val parent = "block/${Registration.CRAFTER_PROXY_ID}/cutouts/"
-        Registration.bakedModelOverrideRegistry.add(
+        Registration.BAKED_MODEL_OVERRIDE_REGISTRY.add(
                 Registration.CRAFTER_PROXY_BLOCK.registryName
         ) { base, _ ->
             FullbrightBakedModel(
@@ -37,7 +37,8 @@ object ClientEvents {
         FullbrightBakedModel.invalidateCache()
         for (id in e.modelRegistry.keys) {
             val factory =
-                    Registration.bakedModelOverrideRegistry[ResourceLocation(id.namespace, id.path)]
+                    Registration.BAKED_MODEL_OVERRIDE_REGISTRY[
+                            ResourceLocation(id.namespace, id.path)]
             if (factory != null) {
                 e.modelRegistry[id] = factory.create(e.modelRegistry[id], e.modelRegistry)
             }

@@ -51,7 +51,7 @@ class Config(builder: ForgeConfigSpec.Builder) {
                                     DISPLAY_NAME,
                                     """
                         The display name of the tier. 
-                        If nonempty, the name of the block will be formatted as `{name} Crafter Proxy`.
+                        If nonempty, the name of the block will be formatted as `Crafter Proxy [{displayName}]`.
                     """.trimIndent()
                             )
                             defaultTier.add(DISPLAY_NAME, "")
