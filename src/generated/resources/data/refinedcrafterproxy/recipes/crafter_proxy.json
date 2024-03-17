@@ -16,7 +16,7 @@
       "item": "refinedstorage:advanced_processor"
     },
     "d": {
-      "tag": "refinedstorage:crafter"
+      "item": "refinedcrafterproxy:crafter_proxy"
     }
   },
   "result": {

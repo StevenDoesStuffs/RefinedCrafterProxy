@@ -1,12 +1,12 @@
 package dev.stevendoesstuffs.refinedcrafterproxy.crafterproxy
 
-import com.refinedmods.refinedstorage.container.BaseContainer
+import com.refinedmods.refinedstorage.container.BaseContainerMenu
 import dev.stevendoesstuffs.refinedcrafterproxy.Registration
-import net.minecraft.entity.player.PlayerEntity
+import net.minecraft.world.entity.player.Player
 import net.minecraftforge.items.SlotItemHandler
 
-class CrafterProxyContainer(windowId: Int, player: PlayerEntity, tile: CrafterProxyBlockEntity) :
-    BaseContainer(Registration.CRAFTER_PROXY_CONTAINER, tile, player, windowId) {
+class CrafterProxyMenu(windowId: Int, player: Player, tile: CrafterProxyBlockEntity) :
+        BaseContainerMenu(Registration.CRAFTER_PROXY_CONTAINER, tile, player, windowId) {
     init {
         addSlot(SlotItemHandler(tile.node.cardInventory, 0, 8 + 18 * 4, 20))
         for (i in 0..3) {

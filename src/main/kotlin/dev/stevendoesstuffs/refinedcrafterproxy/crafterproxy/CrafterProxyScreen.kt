@@ -1,20 +1,20 @@
 package dev.stevendoesstuffs.refinedcrafterproxy.crafterproxy
 
-import com.mojang.blaze3d.matrix.MatrixStack
+import com.mojang.blaze3d.vertex.PoseStack
+import com.refinedmods.refinedstorage.blockentity.data.BlockEntitySynchronizationClientListener
+import com.refinedmods.refinedstorage.blockentity.data.BlockEntitySynchronizationManager
 import com.refinedmods.refinedstorage.screen.BaseScreen
 import com.refinedmods.refinedstorage.screen.widget.sidebutton.SideButton
-import com.refinedmods.refinedstorage.tile.data.TileDataManager
-import com.refinedmods.refinedstorage.tile.data.TileDataParameterClientListener
 import com.refinedmods.refinedstorage.util.RenderUtils
 import dev.stevendoesstuffs.refinedcrafterproxy.RefinedCrafterProxy.MODID
 import dev.stevendoesstuffs.refinedcrafterproxy.Registration.CRAFTER_PROXY_ID
-import net.minecraft.client.resources.I18n
-import net.minecraft.entity.player.PlayerInventory
-import net.minecraft.util.text.ITextComponent
-import net.minecraft.util.text.TextFormatting
+import net.minecraft.ChatFormatting
+import net.minecraft.client.resources.language.I18n
+import net.minecraft.network.chat.Component
+import net.minecraft.world.entity.player.Inventory
 
-class CrafterProxyScreen(container: CrafterProxyContainer?, inventory: PlayerInventory?, title: ITextComponent?) :
-    BaseScreen<CrafterProxyContainer?>(container, 211, 137, inventory, title) {
+class CrafterProxyScreen(container: CrafterProxyMenu?, inventory: Inventory?, title: Component?) :
+        BaseScreen<CrafterProxyMenu>(container, 211, 137, inventory, title) {
     override fun onPostInit(x: Int, y: Int) {
         // NO OP
     }
@@ -23,41 +23,47 @@ class CrafterProxyScreen(container: CrafterProxyContainer?, inventory: PlayerInv
         // NO OP
     }
 
-    override fun renderBackground(matrixStack: MatrixStack, x: Int, y: Int, mouseX: Int, mouseY: Int) {
+    override fun renderBackground(PoseStack: PoseStack, x: Int, y: Int, mouseX: Int, mouseY: Int) {
         bindTexture(MODID, "gui/$CRAFTER_PROXY_ID.png")
-        blit(matrixStack, x, y, 0, 0, xSize, ySize)
+        blit(PoseStack, x, y, 0, 0, xSize, ySize)
     }
 
-    override fun renderForeground(matrixStack: MatrixStack, mouseX: Int, mouseY: Int) {
-        renderString(matrixStack, 7, 7, RenderUtils.shorten(title.string, 26))
-        renderString(matrixStack, 7, 43, I18n.get("container.inventory"))
+    override fun renderForeground(PoseStack: PoseStack, mouseX: Int, mouseY: Int) {
+        renderString(PoseStack, 7, 7, RenderUtils.shorten(title.string, 26))
+        renderString(PoseStack, 7, 43, I18n.get("container.inventory"))
     }
 }
 
-class CrafterProxyTileDataParameterClientListener : TileDataParameterClientListener<Boolean> {
+class CrafterProxyBlockEntitySynchronizationParameterClientListener :
+        BlockEntitySynchronizationClientListener<Boolean> {
     override fun onChanged(initial: Boolean, hasRoot: Boolean) {
         if (!hasRoot) {
-            BaseScreen.executeLater(
-                CrafterProxyScreen::class.java
-            ) { gui: CrafterProxyScreen ->
-                gui.addSideButton(
-                    CrafterProxyModeSideButton(gui)
-                )
+            BaseScreen.executeLater(CrafterProxyScreen::class.java) { gui: CrafterProxyScreen ->
+                gui.addSideButton(CrafterProxyModeSideButton(gui))
             }
         }
     }
 }
 
-class CrafterProxyModeSideButton(screen: BaseScreen<CrafterProxyContainer?>?) : SideButton(screen) {
+class CrafterProxyModeSideButton(screen: BaseScreen<CrafterProxyMenu>?) : SideButton(screen) {
     override fun getTooltip(): String {
-        return I18n.get("sidebutton.refinedstorage.crafter_mode") + "\n" + TextFormatting.GRAY + I18n.get("sidebutton.refinedstorage.crafter_mode." + CrafterProxyBlockEntity.MODE.value)
+        return I18n.get("sidebutton.refinedstorage.crafter_mode") +
+                "\n" +
+                ChatFormatting.GRAY +
+                I18n.get(
+                        "sidebutton.refinedstorage.crafter_mode." +
+                                CrafterProxyBlockEntity.MODE.value
+                )
     }
 
-    override fun renderButtonIcon(matrixStack: MatrixStack, x: Int, y: Int) {
-        screen.blit(matrixStack, x, y, CrafterProxyBlockEntity.MODE.value * 16, 0, 16, 16)
+    override fun renderButtonIcon(PoseStack: PoseStack, x: Int, y: Int) {
+        screen.blit(PoseStack, x, y, CrafterProxyBlockEntity.MODE.value * 16, 0, 16, 16)
     }
 
     override fun onPress() {
-        TileDataManager.setParameter(CrafterProxyBlockEntity.MODE, CrafterProxyBlockEntity.MODE.value + 1)
+        BlockEntitySynchronizationManager.setParameter(
+                CrafterProxyBlockEntity.MODE,
+                CrafterProxyBlockEntity.MODE.value + 1
+        )
     }
 }

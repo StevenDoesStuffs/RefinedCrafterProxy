@@ -1,5 +1,5 @@
 modLoader = "kotlinforforge"
-loaderVersion = "[1.16,)"
+loaderVersion = "[3.12,)"
 license = 'LGPL'
 
 [[mods]]
@@ -14,18 +14,18 @@ Allows multiple crafters to use the same pattern set.
 [[dependencies.refinedcrafterproxy]]
 modId = "forge"
 mandatory = true
-versionRange = "[36,)"
+versionRange = "[40,)"
 ordering = "NONE"
 side = "BOTH"
 [[dependencies.refinedcrafterproxy]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.16.5]"
+versionRange = "[1.18.2]"
 ordering = "NONE"
 side = "BOTH"
 [[dependencies.refinedcrafterproxy]]
 modId = "refinedstorage"
 mandatory = true
-versionRange = "[1.9.15,)"
+versionRange = "[1.10,)"
 ordering = "AFTER"
 side = "BOTH"

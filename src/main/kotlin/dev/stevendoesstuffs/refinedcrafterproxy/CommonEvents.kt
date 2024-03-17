@@ -1,30 +1,29 @@
 package dev.stevendoesstuffs.refinedcrafterproxy
 
 import com.refinedmods.refinedstorage.apiimpl.API
-import com.refinedmods.refinedstorage.tile.data.TileDataManager
-import com.refinedmods.refinedstorage.tile.data.TileDataParameter
+import com.refinedmods.refinedstorage.blockentity.data.BlockEntitySynchronizationManager
 import dev.stevendoesstuffs.refinedcrafterproxy.crafterproxy.CrafterProxyNetworkNode
-import net.minecraft.nbt.CompoundNBT
-import net.minecraft.util.ResourceLocation
-import net.minecraft.util.math.BlockPos
-import net.minecraft.world.World
+import net.minecraft.core.BlockPos
+import net.minecraft.nbt.CompoundTag
+import net.minecraft.resources.ResourceLocation
+import net.minecraft.world.level.Level
 import net.minecraftforge.eventbus.api.SubscribeEvent
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent
 
 object CommonEvents {
     @SubscribeEvent
+    @Suppress("UNUSED_PARAMETER")
     fun init(event: FMLCommonSetupEvent) {
         API.instance().networkNodeRegistry.add(
-            ResourceLocation(RefinedCrafterProxy.MODID, Registration.CRAFTER_PROXY_ID)
-        ) { tag: CompoundNBT, world: World, pos: BlockPos? ->
-            val node = CrafterProxyNetworkNode(world, pos)
+                        ResourceLocation(RefinedCrafterProxy.MODID, Registration.CRAFTER_PROXY_ID)
+                ) { tag: CompoundTag, level: Level, pos: BlockPos? ->
+            val node = CrafterProxyNetworkNode(level, pos)
             node.read(tag)
             return@add node
         }
 
-        Registration.CRAFTER_PROXY_BLOCK_ENTITY.create()!!.dataManager.parameters
-            .forEach { parameter: TileDataParameter<*, *>? ->
-                TileDataManager.registerParameter(parameter)
-            }
+        @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+        Registration.CRAFTER_PROXY_BLOCK_ENTITY.create(BlockPos.ZERO, null)!!.dataManager.parameters
+                .forEach(BlockEntitySynchronizationManager::registerParameter)
     }
 }

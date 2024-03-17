@@ -6,18 +6,26 @@ import dev.stevendoesstuffs.refinedcrafterproxy.RefinedCrafterProxy.MODID
 import dev.stevendoesstuffs.refinedcrafterproxy.Registration
 import dev.stevendoesstuffs.refinedcrafterproxy.Registration.CRAFTER_PROXY_CARD_ID
 import dev.stevendoesstuffs.refinedcrafterproxy.Registration.CRAFTER_PROXY_TAB
-import net.minecraft.client.util.ITooltipFlag
-import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.item.Item
-import net.minecraft.item.ItemStack
-import net.minecraft.item.ItemUseContext
+import java.util.Locale
+import net.minecraft.ChatFormatting
+import net.minecraft.core.BlockPos
+import net.minecraft.core.Registry
+import net.minecraft.network.chat.Component
+import net.minecraft.network.chat.MutableComponent
+import net.minecraft.network.chat.TextComponent
+import net.minecraft.network.chat.TranslatableComponent
+import net.minecraft.resources.ResourceKey
+import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.MinecraftServer
-import net.minecraft.util.*
-import net.minecraft.util.math.BlockPos
-import net.minecraft.util.registry.Registry
-import net.minecraft.util.text.*
-import net.minecraft.world.World
-import java.util.*
+import net.minecraft.world.InteractionHand
+import net.minecraft.world.InteractionResult
+import net.minecraft.world.InteractionResultHolder
+import net.minecraft.world.entity.player.Player
+import net.minecraft.world.item.Item
+import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.TooltipFlag
+import net.minecraft.world.item.context.UseOnContext
+import net.minecraft.world.level.Level
 
 class CrafterProxyCardItem : Item(Properties().stacksTo(1).tab(CRAFTER_PROXY_TAB)) {
     companion object {
@@ -28,11 +36,16 @@ class CrafterProxyCardItem : Item(Properties().stacksTo(1).tab(CRAFTER_PROXY_TAB
         const val STATUS = "Status"
     }
 
-    fun getPos(stack: ItemStack): Pair<RegistryKey<World>, BlockPos>? {
+    fun getPos(stack: ItemStack): Pair<ResourceKey<Level>, BlockPos>? {
         val tag = stack.tag
-        if (stack.item != Registration.CRAFTER_PROXY_CARD || tag == null ||
-            !tag.contains(BOUND_DIM) || !tag.contains(BOUND_X) || !tag.contains(BOUND_Y) || !tag.contains(BOUND_Z)
-        ) return null
+        if (stack.item != Registration.CRAFTER_PROXY_CARD ||
+                        tag == null ||
+                        !tag.contains(BOUND_DIM) ||
+                        !tag.contains(BOUND_X) ||
+                        !tag.contains(BOUND_Y) ||
+                        !tag.contains(BOUND_Z)
+        )
+                return null
 
         val dimName = tag.getString(BOUND_DIM)
         val x = tag.getInt(BOUND_X)
@@ -40,16 +53,18 @@ class CrafterProxyCardItem : Item(Properties().stacksTo(1).tab(CRAFTER_PROXY_TAB
         val z = tag.getInt(BOUND_Z)
 
         val pos = BlockPos(x, y, z)
-        val dimKey = RegistryKey.create(Registry.DIMENSION_REGISTRY, ResourceLocation(dimName)) ?: return null
+        val dimKey =
+                ResourceKey.create(Registry.DIMENSION_REGISTRY, ResourceLocation(dimName))
+                        ?: return null
 
         return Pair(dimKey, pos)
     }
 
-    fun setPos(stack: ItemStack, world: World, pos: BlockPos): Boolean {
+    fun setPos(stack: ItemStack, level: Level, pos: BlockPos): Boolean {
         if (stack.item != Registration.CRAFTER_PROXY_CARD) return false
         val compound = stack.orCreateTag
 
-        val dimStr = world.dimension().location().toString()
+        val dimStr = level.dimension().location().toString()
         compound.putString(BOUND_DIM, dimStr)
         compound.putInt(BOUND_X, pos.x)
         compound.putInt(BOUND_Y, pos.y)
@@ -67,113 +82,116 @@ class CrafterProxyCardItem : Item(Properties().stacksTo(1).tab(CRAFTER_PROXY_TAB
         return node
     }
 
-    override fun useOn(context: ItemUseContext): ActionResultType {
+    override fun useOn(context: UseOnContext): InteractionResult {
         val player = context.player
-        if (context.level.isClientSide || player == null)
-            return ActionResultType.SUCCESS
+        if (context.level.isClientSide || player == null) return InteractionResult.SUCCESS
         val stack = context.itemInHand
 
         if (!setPos(stack, context.level, context.clickedPos)) {
-            return ActionResultType.CONSUME
+            return InteractionResult.CONSUME
         }
 
         player.displayClientMessage(
-            formatTranslate(
-                "$MODID.$CRAFTER_PROXY_CARD_ID.select",
-                color = TextFormatting.BLUE
-            ),
-            true
+                formatTranslate(
+                        "$MODID.$CRAFTER_PROXY_CARD_ID.select",
+                        color = ChatFormatting.BLUE
+                ),
+                true
         )
 
-        return ActionResultType.SUCCESS
+        return InteractionResult.SUCCESS
     }
 
-    override fun use(level: World, player: PlayerEntity, hand: Hand): ActionResult<ItemStack> {
+    override fun use(
+            level: Level,
+            player: Player,
+            hand: InteractionHand
+    ): InteractionResultHolder<ItemStack> {
         if (player.level.isClientSide || !player.isCrouching) return super.use(level, player, hand)
         val stack = player.getItemInHand(hand)
         stack.tag = null
         player.displayClientMessage(
-            formatTranslate(
-                "$MODID.$CRAFTER_PROXY_CARD_ID.clear",
-                color = TextFormatting.GOLD
-            ),
-            true
+                formatTranslate("$MODID.$CRAFTER_PROXY_CARD_ID.clear", color = ChatFormatting.GOLD),
+                true
         )
-        return ActionResult(ActionResultType.CONSUME, stack)
+        return InteractionResultHolder(InteractionResult.CONSUME, stack)
     }
 
     override fun appendHoverText(
-        stack: ItemStack,
-        world: World?,
-        information: MutableList<ITextComponent>,
-        flag: ITooltipFlag
+            stack: ItemStack,
+            level: Level?,
+            information: MutableList<Component>,
+            flag: TooltipFlag
     ) {
         val tag = stack.tag ?: return
-        val dim = formatDimName(tag.getString(BOUND_DIM), color = TextFormatting.BLUE)
-        val x = formatInt(tag.getInt(BOUND_X), color = TextFormatting.GOLD)
-        val y = formatInt(tag.getInt(BOUND_Y), color = TextFormatting.GOLD)
-        val z = formatInt(tag.getInt(BOUND_Z), color = TextFormatting.GOLD)
+        val dim = formatDimName(tag.getString(BOUND_DIM), color = ChatFormatting.BLUE)
+        val x = formatInt(tag.getInt(BOUND_X), color = ChatFormatting.GOLD)
+        val y = formatInt(tag.getInt(BOUND_Y), color = ChatFormatting.GOLD)
+        val z = formatInt(tag.getInt(BOUND_Z), color = ChatFormatting.GOLD)
 
-        information.add(
-            formatTranslate(
-                "$MODID.$CRAFTER_PROXY_CARD_ID.tooltip",
-                x, y, z, dim
-            )
-        )
+        information.add(formatTranslate("$MODID.$CRAFTER_PROXY_CARD_ID.tooltip", x, y, z, dim))
 
         val status = tag.getString(STATUS)
         if (status == "") return
-        val color = if (status == "connected") TextFormatting.GREEN else TextFormatting.RED
+        val color = if (status == "connected") ChatFormatting.GREEN else ChatFormatting.RED
         information.add(
-            formatTranslate(
-                "$MODID.$CRAFTER_PROXY_CARD_ID.status.prefix"
-            ).append(
-                formatTranslate(
-                    "$MODID.$CRAFTER_PROXY_CARD_ID.status.$status",
-                    color = color
-                )
-            )
+                formatTranslate("$MODID.$CRAFTER_PROXY_CARD_ID.status.prefix")
+                        .append(
+                                formatTranslate(
+                                        "$MODID.$CRAFTER_PROXY_CARD_ID.status.$status",
+                                        color = color
+                                )
+                        )
         )
     }
 }
 
-fun formatTranslate(key: String, vararg args: Any, color: TextFormatting? = null): IFormattableTextComponent {
-    var text: IFormattableTextComponent = TranslationTextComponent(key, *args)
+fun formatTranslate(
+        key: String,
+        vararg args: Any,
+        color: ChatFormatting? = null
+): MutableComponent {
+    var text: MutableComponent = TranslatableComponent(key, *args)
     if (color != null) text = text.withStyle(color)
     return text
 }
 
-fun formatInt(i: Int, color: TextFormatting? = null): IFormattableTextComponent {
-    return if (color != null) StringTextComponent(i.toString()).withStyle(color)
-    else StringTextComponent(i.toString())
+fun formatInt(i: Int, color: ChatFormatting? = null): MutableComponent {
+    return if (color != null) TextComponent(i.toString()).withStyle(color)
+    else TextComponent(i.toString())
 }
 
-fun formatDimName(dimension: String, color: TextFormatting? = null): IFormattableTextComponent {
+fun formatDimName(dimension: String, color: ChatFormatting? = null): MutableComponent {
     val split = dimension.indexOf(':')
-    var dimensionName =
-        if (split >= 0) dimension.substring(split + 1)
-        else dimension
+    var dimensionName = if (split >= 0) dimension.substring(split + 1) else dimension
 
-    if (dimensionName.isEmpty()) return StringTextComponent("!").withStyle(TextFormatting.RED)
+    if (dimensionName.isEmpty()) return TextComponent("!").withStyle(ChatFormatting.RED)
 
-    dimensionName = dimensionName
-        .substring((dimensionName.indexOf('/') + 1).coerceIn(0, (dimensionName.length - 1).coerceAtLeast(0)))
-        .lowercase(Locale.getDefault())
+    dimensionName =
+            dimensionName
+                    .substring(
+                            (dimensionName.indexOf('/') + 1).coerceIn(
+                                    0,
+                                    (dimensionName.length - 1).coerceAtLeast(0)
+                            )
+                    )
+                    .lowercase(Locale.getDefault())
 
-    dimensionName = dimensionName.substring(0, 1).uppercase(Locale.getDefault()) +
-            dimensionName.substring(1)
+    dimensionName =
+            dimensionName.substring(0, 1).uppercase(Locale.getDefault()) +
+                    dimensionName.substring(1)
 
     for (i in 0 until dimensionName.length - 1) {
         if (dimensionName[i] == '_' && Character.isAlphabetic(dimensionName[i + 1].code)) {
             val tmp =
-                if (i + 2 < dimensionName.length) dimensionName.substring(i + 1, i + 2)
-                    .uppercase(Locale.getDefault()) + dimensionName.substring(i + 2)
-                else dimensionName.substring(i + 1)
-                    .uppercase(Locale.getDefault())
+                    if (i + 2 < dimensionName.length)
+                            dimensionName.substring(i + 1, i + 2).uppercase(Locale.getDefault()) +
+                                    dimensionName.substring(i + 2)
+                    else dimensionName.substring(i + 1).uppercase(Locale.getDefault())
             dimensionName = "${dimensionName.substring(0, i)} ${tmp.also { dimensionName = it }}"
         }
     }
 
-    return if (color != null) StringTextComponent(dimensionName).withStyle(color)
-    else StringTextComponent(dimensionName)
+    return if (color != null) TextComponent(dimensionName).withStyle(color)
+    else TextComponent(dimensionName)
 }
