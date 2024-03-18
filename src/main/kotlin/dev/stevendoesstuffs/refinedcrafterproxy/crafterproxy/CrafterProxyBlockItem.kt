@@ -12,16 +12,16 @@ import net.minecraft.util.text.ITextComponent
 import net.minecraft.util.text.StringTextComponent
 import net.minecraft.world.World
 
-class CrafterProxyBlockItem : BaseBlockItem(
-    Registration.CRAFTER_PROXY_BLOCK, Properties().stacksTo(64).tab(
-        Registration.CRAFTER_PROXY_TAB
-    )
-) {
+class CrafterProxyBlockItem :
+        BaseBlockItem(
+                Registration.CRAFTER_PROXY_BLOCK,
+                Properties().stacksTo(64).tab(Registration.CRAFTER_PROXY_TAB)
+        ) {
     override fun appendHoverText(
-        stack: ItemStack,
-        world: World?,
-        information: MutableList<ITextComponent>,
-        flag: ITooltipFlag
+            stack: ItemStack,
+            world: World?,
+            information: MutableList<ITextComponent>,
+            flag: ITooltipFlag
     ) {
         val tag = stack.tag
         if (tag?.contains(NBT_TIER) == true) {

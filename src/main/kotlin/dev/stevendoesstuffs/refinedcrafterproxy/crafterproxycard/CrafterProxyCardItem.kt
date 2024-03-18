@@ -6,6 +6,7 @@ import dev.stevendoesstuffs.refinedcrafterproxy.RefinedCrafterProxy.MODID
 import dev.stevendoesstuffs.refinedcrafterproxy.Registration
 import dev.stevendoesstuffs.refinedcrafterproxy.Registration.CRAFTER_PROXY_CARD_ID
 import dev.stevendoesstuffs.refinedcrafterproxy.Registration.CRAFTER_PROXY_TAB
+import java.util.*
 import net.minecraft.client.util.ITooltipFlag
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.item.Item
@@ -17,7 +18,6 @@ import net.minecraft.util.math.BlockPos
 import net.minecraft.util.registry.Registry
 import net.minecraft.util.text.*
 import net.minecraft.world.World
-import java.util.*
 
 class CrafterProxyCardItem : Item(Properties().stacksTo(1).tab(CRAFTER_PROXY_TAB)) {
     companion object {
@@ -30,9 +30,14 @@ class CrafterProxyCardItem : Item(Properties().stacksTo(1).tab(CRAFTER_PROXY_TAB
 
     fun getPos(stack: ItemStack): Pair<RegistryKey<World>, BlockPos>? {
         val tag = stack.tag
-        if (stack.item != Registration.CRAFTER_PROXY_CARD || tag == null ||
-            !tag.contains(BOUND_DIM) || !tag.contains(BOUND_X) || !tag.contains(BOUND_Y) || !tag.contains(BOUND_Z)
-        ) return null
+        if (stack.item != Registration.CRAFTER_PROXY_CARD ||
+                        tag == null ||
+                        !tag.contains(BOUND_DIM) ||
+                        !tag.contains(BOUND_X) ||
+                        !tag.contains(BOUND_Y) ||
+                        !tag.contains(BOUND_Z)
+        )
+                return null
 
         val dimName = tag.getString(BOUND_DIM)
         val x = tag.getInt(BOUND_X)
@@ -40,7 +45,9 @@ class CrafterProxyCardItem : Item(Properties().stacksTo(1).tab(CRAFTER_PROXY_TAB
         val z = tag.getInt(BOUND_Z)
 
         val pos = BlockPos(x, y, z)
-        val dimKey = RegistryKey.create(Registry.DIMENSION_REGISTRY, ResourceLocation(dimName)) ?: return null
+        val dimKey =
+                RegistryKey.create(Registry.DIMENSION_REGISTRY, ResourceLocation(dimName))
+                        ?: return null
 
         return Pair(dimKey, pos)
     }
@@ -69,8 +76,7 @@ class CrafterProxyCardItem : Item(Properties().stacksTo(1).tab(CRAFTER_PROXY_TAB
 
     override fun useOn(context: ItemUseContext): ActionResultType {
         val player = context.player
-        if (context.level.isClientSide || player == null)
-            return ActionResultType.SUCCESS
+        if (context.level.isClientSide || player == null) return ActionResultType.SUCCESS
         val stack = context.itemInHand
 
         if (!setPos(stack, context.level, context.clickedPos)) {
@@ -78,11 +84,11 @@ class CrafterProxyCardItem : Item(Properties().stacksTo(1).tab(CRAFTER_PROXY_TAB
         }
 
         player.displayClientMessage(
-            formatTranslate(
-                "$MODID.$CRAFTER_PROXY_CARD_ID.select",
-                color = TextFormatting.BLUE
-            ),
-            true
+                formatTranslate(
+                        "$MODID.$CRAFTER_PROXY_CARD_ID.select",
+                        color = TextFormatting.BLUE
+                ),
+                true
         )
 
         return ActionResultType.SUCCESS
@@ -93,20 +99,17 @@ class CrafterProxyCardItem : Item(Properties().stacksTo(1).tab(CRAFTER_PROXY_TAB
         val stack = player.getItemInHand(hand)
         stack.tag = null
         player.displayClientMessage(
-            formatTranslate(
-                "$MODID.$CRAFTER_PROXY_CARD_ID.clear",
-                color = TextFormatting.GOLD
-            ),
-            true
+                formatTranslate("$MODID.$CRAFTER_PROXY_CARD_ID.clear", color = TextFormatting.GOLD),
+                true
         )
         return ActionResult(ActionResultType.CONSUME, stack)
     }
 
     override fun appendHoverText(
-        stack: ItemStack,
-        world: World?,
-        information: MutableList<ITextComponent>,
-        flag: ITooltipFlag
+            stack: ItemStack,
+            world: World?,
+            information: MutableList<ITextComponent>,
+            flag: ITooltipFlag
     ) {
         val tag = stack.tag ?: return
         val dim = formatDimName(tag.getString(BOUND_DIM), color = TextFormatting.BLUE)
@@ -114,30 +117,28 @@ class CrafterProxyCardItem : Item(Properties().stacksTo(1).tab(CRAFTER_PROXY_TAB
         val y = formatInt(tag.getInt(BOUND_Y), color = TextFormatting.GOLD)
         val z = formatInt(tag.getInt(BOUND_Z), color = TextFormatting.GOLD)
 
-        information.add(
-            formatTranslate(
-                "$MODID.$CRAFTER_PROXY_CARD_ID.tooltip",
-                x, y, z, dim
-            )
-        )
+        information.add(formatTranslate("$MODID.$CRAFTER_PROXY_CARD_ID.tooltip", x, y, z, dim))
 
         val status = tag.getString(STATUS)
         if (status == "") return
         val color = if (status == "connected") TextFormatting.GREEN else TextFormatting.RED
         information.add(
-            formatTranslate(
-                "$MODID.$CRAFTER_PROXY_CARD_ID.status.prefix"
-            ).append(
-                formatTranslate(
-                    "$MODID.$CRAFTER_PROXY_CARD_ID.status.$status",
-                    color = color
-                )
-            )
+                formatTranslate("$MODID.$CRAFTER_PROXY_CARD_ID.status.prefix")
+                        .append(
+                                formatTranslate(
+                                        "$MODID.$CRAFTER_PROXY_CARD_ID.status.$status",
+                                        color = color
+                                )
+                        )
         )
     }
 }
 
-fun formatTranslate(key: String, vararg args: Any, color: TextFormatting? = null): IFormattableTextComponent {
+fun formatTranslate(
+        key: String,
+        vararg args: Any,
+        color: TextFormatting? = null
+): IFormattableTextComponent {
     var text: IFormattableTextComponent = TranslationTextComponent(key, *args)
     if (color != null) text = text.withStyle(color)
     return text
@@ -150,26 +151,31 @@ fun formatInt(i: Int, color: TextFormatting? = null): IFormattableTextComponent 
 
 fun formatDimName(dimension: String, color: TextFormatting? = null): IFormattableTextComponent {
     val split = dimension.indexOf(':')
-    var dimensionName =
-        if (split >= 0) dimension.substring(split + 1)
-        else dimension
+    var dimensionName = if (split >= 0) dimension.substring(split + 1) else dimension
 
     if (dimensionName.isEmpty()) return StringTextComponent("!").withStyle(TextFormatting.RED)
 
-    dimensionName = dimensionName
-        .substring((dimensionName.indexOf('/') + 1).coerceIn(0, (dimensionName.length - 1).coerceAtLeast(0)))
-        .lowercase(Locale.getDefault())
+    dimensionName =
+            dimensionName
+                    .substring(
+                            (dimensionName.indexOf('/') + 1).coerceIn(
+                                    0,
+                                    (dimensionName.length - 1).coerceAtLeast(0)
+                            )
+                    )
+                    .lowercase(Locale.getDefault())
 
-    dimensionName = dimensionName.substring(0, 1).uppercase(Locale.getDefault()) +
-            dimensionName.substring(1)
+    dimensionName =
+            dimensionName.substring(0, 1).uppercase(Locale.getDefault()) +
+                    dimensionName.substring(1)
 
     for (i in 0 until dimensionName.length - 1) {
         if (dimensionName[i] == '_' && Character.isAlphabetic(dimensionName[i + 1].code)) {
             val tmp =
-                if (i + 2 < dimensionName.length) dimensionName.substring(i + 1, i + 2)
-                    .uppercase(Locale.getDefault()) + dimensionName.substring(i + 2)
-                else dimensionName.substring(i + 1)
-                    .uppercase(Locale.getDefault())
+                    if (i + 2 < dimensionName.length)
+                            dimensionName.substring(i + 1, i + 2).uppercase(Locale.getDefault()) +
+                                    dimensionName.substring(i + 2)
+                    else dimensionName.substring(i + 1).uppercase(Locale.getDefault())
             dimensionName = "${dimensionName.substring(0, i)} ${tmp.also { dimensionName = it }}"
         }
     }

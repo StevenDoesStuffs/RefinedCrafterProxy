@@ -15,16 +15,16 @@ object CommonEvents {
     @SubscribeEvent
     fun init(event: FMLCommonSetupEvent) {
         API.instance().networkNodeRegistry.add(
-            ResourceLocation(RefinedCrafterProxy.MODID, Registration.CRAFTER_PROXY_ID)
-        ) { tag: CompoundNBT, world: World, pos: BlockPos? ->
+                        ResourceLocation(RefinedCrafterProxy.MODID, Registration.CRAFTER_PROXY_ID)
+                ) { tag: CompoundNBT, world: World, pos: BlockPos? ->
             val node = CrafterProxyNetworkNode(world, pos)
             node.read(tag)
             return@add node
         }
 
-        Registration.CRAFTER_PROXY_BLOCK_ENTITY.create()!!.dataManager.parameters
-            .forEach { parameter: TileDataParameter<*, *>? ->
-                TileDataManager.registerParameter(parameter)
-            }
+        Registration.CRAFTER_PROXY_BLOCK_ENTITY.create()!!.dataManager.parameters.forEach {
+                parameter: TileDataParameter<*, *>? ->
+            TileDataManager.registerParameter(parameter)
+        }
     }
 }

@@ -6,7 +6,7 @@ import net.minecraft.entity.player.PlayerEntity
 import net.minecraftforge.items.SlotItemHandler
 
 class CrafterProxyContainer(windowId: Int, player: PlayerEntity, tile: CrafterProxyBlockEntity) :
-    BaseContainer(Registration.CRAFTER_PROXY_CONTAINER, tile, player, windowId) {
+        BaseContainer(Registration.CRAFTER_PROXY_CONTAINER, tile, player, windowId) {
     init {
         addSlot(SlotItemHandler(tile.node.cardInventory, 0, 8 + 18 * 4, 20))
         for (i in 0..3) {

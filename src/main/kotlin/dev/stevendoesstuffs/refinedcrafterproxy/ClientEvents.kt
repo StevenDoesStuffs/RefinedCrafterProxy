@@ -13,17 +13,20 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent
 object ClientEvents {
     @SubscribeEvent
     fun init(event: FMLClientSetupEvent) {
-        ScreenManager.register(Registration.CRAFTER_PROXY_CONTAINER) { container, inventory, title ->
+        ScreenManager.register(Registration.CRAFTER_PROXY_CONTAINER) { container, inventory, title
+            ->
             CrafterProxyScreen(container, inventory, title)
         }
         RenderTypeLookup.setRenderLayer(Registration.CRAFTER_PROXY_BLOCK, RenderType.cutout())
         val parent = "block/${Registration.CRAFTER_PROXY_ID}/cutouts/"
-        Registration.bakedModelOverrideRegistry.add(Registration.CRAFTER_PROXY_BLOCK.registryName) { base, _ ->
+        Registration.BAKED_MODEL_OVERRIDE_REGISTRY.add(
+                Registration.CRAFTER_PROXY_BLOCK.registryName
+        ) { base, _ ->
             FullbrightBakedModel(
-                base,
-                true,
-                ResourceLocation(RefinedCrafterProxy.MODID, parent + "side_connected"),
-                ResourceLocation(RefinedCrafterProxy.MODID, parent + "top_connected")
+                    base,
+                    true,
+                    ResourceLocation(RefinedCrafterProxy.MODID, parent + "side_connected"),
+                    ResourceLocation(RefinedCrafterProxy.MODID, parent + "top_connected")
             )
         }
     }
@@ -32,7 +35,8 @@ object ClientEvents {
     fun onModelBake(e: ModelBakeEvent) {
         FullbrightBakedModel.invalidateCache()
         for (id in e.modelRegistry.keys) {
-            val factory = Registration.bakedModelOverrideRegistry[ResourceLocation(id.namespace, id.path)]
+            val factory =
+                    Registration.BAKED_MODEL_OVERRIDE_REGISTRY[ResourceLocation(id.namespace, id.path)]
             if (factory != null) {
                 e.modelRegistry[id] = factory.create(e.modelRegistry[id], e.modelRegistry)
             }

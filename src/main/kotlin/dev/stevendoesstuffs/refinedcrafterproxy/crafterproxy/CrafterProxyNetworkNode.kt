@@ -18,6 +18,8 @@ import dev.stevendoesstuffs.refinedcrafterproxy.RefinedCrafterProxy.MODID
 import dev.stevendoesstuffs.refinedcrafterproxy.Registration.CRAFTER_PROXY_CARD
 import dev.stevendoesstuffs.refinedcrafterproxy.Registration.CRAFTER_PROXY_ID
 import dev.stevendoesstuffs.refinedcrafterproxy.crafterproxycard.CrafterProxyCardItem
+import java.util.*
+import kotlin.math.roundToInt
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
 import net.minecraft.nbt.CompoundNBT
@@ -36,11 +38,9 @@ import net.minecraftforge.fluids.capability.IFluidHandler
 import net.minecraftforge.items.IItemHandler
 import net.minecraftforge.items.IItemHandlerModifiable
 import net.minecraftforge.items.wrapper.CombinedInvWrapper
-import java.util.*
-import kotlin.math.roundToInt
 
-class CrafterProxyNetworkNode(world: World, pos: BlockPos?) : NetworkNode(world, pos),
-    ICraftingPatternContainer {
+class CrafterProxyNetworkNode(world: World, pos: BlockPos?) :
+        NetworkNode(world, pos), ICraftingPatternContainer {
 
     enum class CrafterMode {
         IGNORE,
@@ -65,7 +65,7 @@ class CrafterProxyNetworkNode(world: World, pos: BlockPos?) : NetworkNode(world,
         private const val NBT_LOCKED = "Locked"
         private const val NBT_WAS_POWERED = "WasPowered"
         private val DEFAULT_NAME: ITextComponent =
-            TranslationTextComponent("block.$MODID.$CRAFTER_PROXY_ID")
+                TranslationTextComponent("block.$MODID.$CRAFTER_PROXY_ID")
         private val ID = ResourceLocation(MODID, CRAFTER_PROXY_ID)
         private const val CARD_UPDATE_CLEAR_DELAY = 1
         private const val CARD_UPDATE_SET_DELAY = 4
@@ -91,19 +91,23 @@ class CrafterProxyNetworkNode(world: World, pos: BlockPos?) : NetworkNode(world,
         }
     }
 
-    val cardInventory = CardItemHandler()
-        .addValidator { stack -> stack.item == CRAFTER_PROXY_CARD }
-        .addListener(NetworkNodeInventoryListener(this))
-        .addListener { _: BaseItemHandler?, _: Int, reading: Boolean ->
-            if (!reading) {
-                cardUpdateTick = Int.MIN_VALUE
-                cardUpdateStack = ItemStack(Items.AIR)
-                if (network != null) network!!.craftingManager.invalidate()
-            }
-        } as CardItemHandler
+    val cardInventory =
+            CardItemHandler()
+                    .addValidator { stack -> stack.item == CRAFTER_PROXY_CARD }
+                    .addListener(NetworkNodeInventoryListener(this))
+                    .addListener { _: BaseItemHandler?, _: Int, reading: Boolean ->
+                        if (!reading) {
+                            cardUpdateTick = Int.MIN_VALUE
+                            cardUpdateStack = ItemStack(Items.AIR)
+                            if (network != null) network!!.craftingManager.invalidate()
+                        }
+                    } as
+                    CardItemHandler
 
-    private val upgrades = UpgradeItemHandler(4, UpgradeItem.Type.SPEED)
-        .addListener(NetworkNodeInventoryListener(this)) as UpgradeItemHandler
+    private val upgrades =
+            UpgradeItemHandler(4, UpgradeItem.Type.SPEED)
+                    .addListener(NetworkNodeInventoryListener(this)) as
+                    UpgradeItemHandler
 
     var tier: String? = null
 
@@ -122,7 +126,8 @@ class CrafterProxyNetworkNode(world: World, pos: BlockPos?) : NetworkNode(world,
     override fun getEnergyUsage(): Int {
         return Config.CONFIG.getCrafterEnergyUsage(tier) +
                 Config.CONFIG.getPatternsEnergyUsage(tier) * numPatterns +
-                (Config.CONFIG.getUpgradesEnergyMultiplier(tier) * upgrades.energyUsage).roundToInt()
+                (Config.CONFIG.getUpgradesEnergyMultiplier(tier) * upgrades.energyUsage)
+                        .roundToInt()
     }
 
     override fun update() {
@@ -141,28 +146,28 @@ class CrafterProxyNetworkNode(world: World, pos: BlockPos?) : NetworkNode(world,
         if (ticks == cardUpdateTick + CARD_UPDATE_CLEAR_DELAY) {
             val card = cardUpdateStack.copy()
             card.removeTagKey(CrafterProxyCardItem.STATUS)
-            if (cardInventory.overrideItem(card))
-                markDirty()
+            if (cardInventory.overrideItem(card)) markDirty()
         } else if (ticks == cardUpdateTick + CARD_UPDATE_CLEAR_DELAY + CARD_UPDATE_SET_DELAY) {
-            if (cardInventory.overrideItem(cardUpdateStack))
-                markDirty()
+            if (cardInventory.overrideItem(cardUpdateStack)) markDirty()
         }
     }
 
-    override fun onConnectedStateChange(network: INetwork, state: Boolean, cause: ConnectivityStateChangeCause?) {
+    override fun onConnectedStateChange(
+            network: INetwork,
+            state: Boolean,
+            cause: ConnectivityStateChangeCause?
+    ) {
         super.onConnectedStateChange(network, state, cause)
         network.craftingManager.invalidate()
     }
 
     override fun onDisconnected(network: INetwork) {
         super.onDisconnected(network)
-        network.craftingManager.tasks.stream()
-            .filter { task: ICraftingTask ->
-                task.pattern.container.position == pos
-            }
-            .forEach { task: ICraftingTask ->
-                network.craftingManager.cancel(task.id)
-            }
+        network.craftingManager
+                .tasks
+                .stream()
+                .filter { task: ICraftingTask -> task.pattern.container.position == pos }
+                .forEach { task: ICraftingTask -> network.craftingManager.cancel(task.id) }
     }
 
     override fun onDirectionChanged(direction: Direction?) {
@@ -214,13 +219,16 @@ class CrafterProxyNetworkNode(world: World, pos: BlockPos?) : NetworkNode(world,
     }
 
     override fun getUpdateInterval(): Int {
-        return Config.CONFIG.getUpdateInterval(tier, upgrades.getUpgradeCount(UpgradeItem.Type.SPEED))
+        return Config.CONFIG.getUpdateInterval(
+                tier,
+                upgrades.getUpgradeCount(UpgradeItem.Type.SPEED)
+        )
     }
 
     override fun getMaximumSuccessfulCraftingUpdates(): Int {
         return Config.CONFIG.getMaximumSuccessfulCraftingUpdates(
-            tier,
-            upgrades.getUpgradeCount(UpgradeItem.Type.SPEED)
+                tier,
+                upgrades.getUpgradeCount(UpgradeItem.Type.SPEED)
         )
     }
 
@@ -255,20 +263,22 @@ class CrafterProxyNetworkNode(world: World, pos: BlockPos?) : NetworkNode(world,
 
         val node = CRAFTER_PROXY_CARD.getNode(world.server!!, card)
         var res: List<ICraftingPattern> = emptyList()
-        val msg = if (node == null || node.network != network) {
-            "disconnected"
-        } else if (node !is ICraftingPatternContainer) {
-            "invalid_crafter"
-        } else {
-            res = node.patterns
-            "connected"
-        }
+        val msg =
+                if (node == null || node.network != network) {
+                    "disconnected"
+                } else if (node !is ICraftingPatternContainer || node is CrafterProxyNetworkNode) {
+                    "invalid_crafter"
+                } else {
+                    res = node.patterns
+                    "connected"
+                }
 
-        val newCard = if ((card.tag?.getString(CrafterProxyCardItem.STATUS) ?: "") != msg) {
-            val cardCopy = card.copy()
-            cardCopy.orCreateTag.putString(CrafterProxyCardItem.STATUS, msg)
-            cardCopy
-        } else card
+        val newCard =
+                if ((card.tag?.getString(CrafterProxyCardItem.STATUS) ?: "") != msg) {
+                    val cardCopy = card.copy()
+                    cardCopy.orCreateTag.putString(CrafterProxyCardItem.STATUS, msg)
+                    cardCopy
+                } else card
 
         cardUpdateTick = ticks
         cardUpdateStack = newCard
@@ -284,7 +294,9 @@ class CrafterProxyNetworkNode(world: World, pos: BlockPos?) : NetworkNode(world,
 
     override fun getName(): ITextComponent {
         fun getNameInternal(): ITextComponent {
-            displayName?.let { return it }
+            displayName?.let {
+                return it
+            }
 
             val facing = connectedTile
             if (facing is INameable) {
@@ -299,9 +311,9 @@ class CrafterProxyNetworkNode(world: World, pos: BlockPos?) : NetworkNode(world,
         val name = getNameInternal()
         Config.CONFIG.getDisplayName(tier)?.let {
             return StringTextComponent("")
-                .append(name)
-                .append(StringTextComponent(" "))
-                .append(TextComponentUtils.wrapInSquareBrackets(it))
+                    .append(name)
+                    .append(StringTextComponent(" "))
+                    .append(TextComponentUtils.wrapInSquareBrackets(it))
         }
         return name
     }
@@ -341,11 +353,10 @@ class CrafterProxyNetworkNode(world: World, pos: BlockPos?) : NetworkNode(world,
         if (visited) {
             return null
         }
-        val facing = API.instance().getNetworkNodeManager(world as ServerWorld).getNode(
-            pos.relative(
-                direction
-            )
-        )
+        val facing =
+                API.instance()
+                        .getNetworkNodeManager(world as ServerWorld)
+                        .getNode(pos.relative(direction))
         if (facing !is ICraftingPatternContainer || facing.network !== network) {
             return this
         }
@@ -374,12 +385,13 @@ class CrafterProxyNetworkNode(world: World, pos: BlockPos?) : NetworkNode(world,
         val root = getRootContainerNotSelf()
         return if (root.isPresent) {
             root.get().isLocked
-        } else when (mode) {
-            CrafterMode.IGNORE -> false
-            CrafterMode.SIGNAL_LOCKS_AUTOCRAFTING -> world.hasNeighborSignal(pos)
-            CrafterMode.SIGNAL_UNLOCKS_AUTOCRAFTING -> !world.hasNeighborSignal(pos)
-            CrafterMode.PULSE_INSERTS_NEXT_SET -> locked
-        }
+        } else
+                when (mode) {
+                    CrafterMode.IGNORE -> false
+                    CrafterMode.SIGNAL_LOCKS_AUTOCRAFTING -> world.hasNeighborSignal(pos)
+                    CrafterMode.SIGNAL_UNLOCKS_AUTOCRAFTING -> !world.hasNeighborSignal(pos)
+                    CrafterMode.PULSE_INSERTS_NEXT_SET -> locked
+                }
     }
 
     override fun unlock() {
@@ -396,5 +408,17 @@ class CrafterProxyNetworkNode(world: World, pos: BlockPos?) : NetworkNode(world,
             locked = true
             markDirty()
         }
+    }
+
+    override fun getItemStack(): ItemStack {
+        val itemstack = super.getItemStack()
+        Config.CONFIG.getDisplayName(tier)?.let {
+            itemstack.hoverName =
+                    StringTextComponent("")
+                            .append(DEFAULT_NAME)
+                            .append(StringTextComponent(" "))
+                            .append(TextComponentUtils.wrapInSquareBrackets(it))
+        }
+        return itemstack
     }
 }

@@ -7,7 +7,6 @@ import mezz.jei.api.JeiPlugin
 import mezz.jei.api.registration.ISubtypeRegistration
 import net.minecraft.util.ResourceLocation
 
-
 @JeiPlugin
 class RefinedCrafterProxyJeiPlugin : IModPlugin {
     override fun getPluginUid(): ResourceLocation {

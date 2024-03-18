@@ -11,7 +11,8 @@ import net.minecraft.loot.LootFunctionType
 import net.minecraft.loot.LootParameters
 import net.minecraft.loot.conditions.ILootCondition
 
-class CrafterProxyLootFunction private constructor(conditions: Array<out ILootCondition>) : LootFunction(conditions) {
+class CrafterProxyLootFunction private constructor(conditions: Array<out ILootCondition>) :
+        LootFunction(conditions) {
 
     companion object {
         fun builder(): Builder<*> {
@@ -35,9 +36,9 @@ class CrafterProxyLootFunction private constructor(conditions: Array<out ILootCo
 
     class Serializer : LootFunction.Serializer<CrafterProxyLootFunction?>() {
         override fun deserialize(
-            obj: JsonObject,
-            deserializationContext: JsonDeserializationContext,
-            conditions: Array<out ILootCondition>
+                obj: JsonObject,
+                deserializationContext: JsonDeserializationContext,
+                conditions: Array<out ILootCondition>
         ): CrafterProxyLootFunction {
             return CrafterProxyLootFunction(conditions)
         }

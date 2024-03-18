@@ -16,47 +16,42 @@ import net.minecraftforge.registries.ForgeRegistries
 import thedarkcolour.kotlinforforge.forge.KDeferredRegister
 import thedarkcolour.kotlinforforge.forge.MOD_BUS
 
-
 object Registration {
     val ITEMS_REGISTRY = KDeferredRegister(ForgeRegistries.ITEMS, MODID)
     val BLOCKS_REGISTRY = KDeferredRegister(ForgeRegistries.BLOCKS, MODID)
     val BLOCK_ENTITIES_REGISTRY = KDeferredRegister(ForgeRegistries.TILE_ENTITIES, MODID)
     val CONTAINERS_REGISTRY = KDeferredRegister(ForgeRegistries.CONTAINERS, MODID)
-    val bakedModelOverrideRegistry = BakedModelOverrideRegistry()
+    val BAKED_MODEL_OVERRIDE_REGISTRY = BakedModelOverrideRegistry()
 
     const val CRAFTER_PROXY_ID = "crafter_proxy"
     const val CRAFTER_PROXY_CARD_ID = "crafter_proxy_card"
 
-    val CRAFTER_PROXY_CARD by ITEMS_REGISTRY.registerObject(CRAFTER_PROXY_CARD_ID) {
-        CrafterProxyCardItem()
-    }
+    val CRAFTER_PROXY_CARD by
+            ITEMS_REGISTRY.registerObject(CRAFTER_PROXY_CARD_ID) { CrafterProxyCardItem() }
 
-    val CRAFTER_PROXY_BLOCK by BLOCKS_REGISTRY.registerObject(CRAFTER_PROXY_ID) {
-        CrafterProxyBlock()
-    }
+    val CRAFTER_PROXY_BLOCK by
+            BLOCKS_REGISTRY.registerObject(CRAFTER_PROXY_ID) { CrafterProxyBlock() }
 
-    val CRAFTER_PROXY_BLOCK_ITEM by ITEMS_REGISTRY.registerObject(CRAFTER_PROXY_ID) {
-        CrafterProxyBlockItem()
-    }
+    val CRAFTER_PROXY_BLOCK_ITEM by
+            ITEMS_REGISTRY.registerObject(CRAFTER_PROXY_ID) { CrafterProxyBlockItem() }
 
-    val CRAFTER_PROXY_BLOCK_ENTITY: TileEntityType<CrafterProxyBlockEntity> by BLOCK_ENTITIES_REGISTRY.registerObject(
-        CRAFTER_PROXY_ID
-    ) {
-        TileEntityType.Builder.of({ CrafterProxyBlockEntity() }, CRAFTER_PROXY_BLOCK).build(null)
-    }
-
-    val CRAFTER_PROXY_CONTAINER: ContainerType<CrafterProxyContainer?> by CONTAINERS_REGISTRY.registerObject(
-        CRAFTER_PROXY_ID
-    ) {
-        IForgeContainerType.create { windowId, inv, data ->
-            val pos = data.readBlockPos()
-            val te = inv.player.commandSenderWorld.getBlockEntity(pos)
-            if (te !is CrafterProxyBlockEntity) {
-                return@create null
+    val CRAFTER_PROXY_BLOCK_ENTITY: TileEntityType<CrafterProxyBlockEntity> by
+            BLOCK_ENTITIES_REGISTRY.registerObject(CRAFTER_PROXY_ID) {
+                TileEntityType.Builder.of({ CrafterProxyBlockEntity() }, CRAFTER_PROXY_BLOCK)
+                        .build(null)
             }
-            return@create CrafterProxyContainer(windowId, inv.player, te)
-        }
-    }
+
+    val CRAFTER_PROXY_CONTAINER: ContainerType<CrafterProxyContainer?> by
+            CONTAINERS_REGISTRY.registerObject(CRAFTER_PROXY_ID) {
+                IForgeContainerType.create { windowId, inv, data ->
+                    val pos = data.readBlockPos()
+                    val te = inv.player.commandSenderWorld.getBlockEntity(pos)
+                    if (te !is CrafterProxyBlockEntity) {
+                        return@create null
+                    }
+                    return@create CrafterProxyContainer(windowId, inv.player, te)
+                }
+            }
 
     lateinit var CRAFTER_PROXY_LOOT_FUNCTION: LootFunctionType
 
@@ -73,16 +68,18 @@ object Registration {
     }
 
     private fun registerLootFunctions() {
-        CRAFTER_PROXY_LOOT_FUNCTION = Registry.register(
-            Registry.LOOT_FUNCTION_TYPE,
-            ResourceLocation(MODID, CRAFTER_PROXY_ID),
-            LootFunctionType(CrafterProxyLootFunction.Serializer())
-        )
+        CRAFTER_PROXY_LOOT_FUNCTION =
+                Registry.register(
+                        Registry.LOOT_FUNCTION_TYPE,
+                        ResourceLocation(MODID, CRAFTER_PROXY_ID),
+                        LootFunctionType(CrafterProxyLootFunction.Serializer())
+                )
     }
 
-    val CRAFTER_PROXY_TAB: ItemGroup = object : ItemGroup("${MODID}_tab") {
-        override fun makeIcon(): ItemStack {
-            return ItemStack(CRAFTER_PROXY_CARD)
-        }
-    }
+    val CRAFTER_PROXY_TAB: ItemGroup =
+            object : ItemGroup("${MODID}_tab") {
+                override fun makeIcon(): ItemStack {
+                    return ItemStack(CRAFTER_PROXY_CARD)
+                }
+            }
 }

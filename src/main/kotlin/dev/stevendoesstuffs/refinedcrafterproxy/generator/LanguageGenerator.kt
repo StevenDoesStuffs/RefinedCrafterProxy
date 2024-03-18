@@ -12,8 +12,8 @@ class LanguageGenerator(gen: DataGenerator) : LanguageProvider(gen, MODID, "en_u
         add("$MODID.$CRAFTER_PROXY_CARD_ID.select", "Block selected")
         add("$MODID.$CRAFTER_PROXY_CARD_ID.clear", "Selection cleared")
         add(
-            "$MODID.$CRAFTER_PROXY_CARD_ID.tooltip",
-            "Linked to a block in the %4\$s at (%1\$d, %2\$d, %3\$d)"
+                "$MODID.$CRAFTER_PROXY_CARD_ID.tooltip",
+                "Linked to a block in the %4\$s at (%1\$d, %2\$d, %3\$d)"
         )
         add("$MODID.$CRAFTER_PROXY_CARD_ID.status.prefix", "Last status: ")
         add("$MODID.$CRAFTER_PROXY_CARD_ID.status.disconnected", "Disconnected")

@@ -32,11 +32,11 @@ class CrafterProxyBlock : NetworkNodeBlock(BlockUtils.DEFAULT_ROCK_PROPERTIES) {
     }
 
     override fun setPlacedBy(
-        worldIn: World,
-        pos: BlockPos,
-        state: BlockState,
-        placer: LivingEntity?,
-        stack: ItemStack
+            worldIn: World,
+            pos: BlockPos,
+            state: BlockState,
+            placer: LivingEntity?,
+            stack: ItemStack
     ) {
         super.setPlacedBy(worldIn, pos, state, placer, stack)
         if (!worldIn.isClientSide()) {
@@ -46,7 +46,7 @@ class CrafterProxyBlock : NetworkNodeBlock(BlockUtils.DEFAULT_ROCK_PROPERTIES) {
                     tile.node.setDisplayName(stack.hoverName)
                     tile.node.markDirty()
                 }
-                
+
                 val tag = stack.tag
                 if (tag?.contains(NBT_TIER) == true) {
                     tile.node.tier = tag.getString(NBT_TIER)
@@ -58,32 +58,37 @@ class CrafterProxyBlock : NetworkNodeBlock(BlockUtils.DEFAULT_ROCK_PROPERTIES) {
 
     @Deprecated("Deprecated in Java")
     override fun use(
-        state: BlockState,
-        worldIn: World,
-        pos: BlockPos,
-        player: PlayerEntity,
-        handIn: Hand,
-        hit: BlockRayTraceResult
+            state: BlockState,
+            worldIn: World,
+            pos: BlockPos,
+            player: PlayerEntity,
+            handIn: Hand,
+            hit: BlockRayTraceResult
     ): ActionResultType {
         if (worldIn.isClientSide()) return ActionResultType.SUCCESS
 
-        return NetworkUtils.attempt(worldIn, pos, player, {
-            NetworkHooks.openGui(
-                player as ServerPlayerEntity,
-                PositionalTileContainerProvider<CrafterProxyBlockEntity>(
-                    (worldIn.getBlockEntity(pos) as CrafterProxyBlockEntity).node.name,
-                    { tile, windowId, _, _ ->
-                        CrafterProxyContainer(
-                            windowId,
-                            player,
-                            tile
-                        )
-                    },
-                    pos
-                ),
-                pos
-            )
-        }, Permission.MODIFY, Permission.AUTOCRAFTING)
+        return NetworkUtils.attempt(
+                worldIn,
+                pos,
+                player,
+                {
+                    NetworkHooks.openGui(
+                            player as ServerPlayerEntity,
+                            PositionalTileContainerProvider<CrafterProxyBlockEntity>(
+                                    (worldIn.getBlockEntity(pos) as CrafterProxyBlockEntity)
+                                            .node
+                                            .name,
+                                    { tile, windowId, _, _ ->
+                                        CrafterProxyContainer(windowId, player, tile)
+                                    },
+                                    pos
+                            ),
+                            pos
+                    )
+                },
+                Permission.MODIFY,
+                Permission.AUTOCRAFTING
+        )
     }
 
     override fun hasConnectedState(): Boolean {

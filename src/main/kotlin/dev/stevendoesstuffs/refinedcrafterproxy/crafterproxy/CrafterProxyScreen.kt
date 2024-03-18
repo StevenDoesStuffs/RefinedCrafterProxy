@@ -13,8 +13,11 @@ import net.minecraft.entity.player.PlayerInventory
 import net.minecraft.util.text.ITextComponent
 import net.minecraft.util.text.TextFormatting
 
-class CrafterProxyScreen(container: CrafterProxyContainer?, inventory: PlayerInventory?, title: ITextComponent?) :
-    BaseScreen<CrafterProxyContainer?>(container, 211, 137, inventory, title) {
+class CrafterProxyScreen(
+        container: CrafterProxyContainer?,
+        inventory: PlayerInventory?,
+        title: ITextComponent?
+) : BaseScreen<CrafterProxyContainer?>(container, 211, 137, inventory, title) {
     override fun onPostInit(x: Int, y: Int) {
         // NO OP
     }
@@ -23,7 +26,13 @@ class CrafterProxyScreen(container: CrafterProxyContainer?, inventory: PlayerInv
         // NO OP
     }
 
-    override fun renderBackground(matrixStack: MatrixStack, x: Int, y: Int, mouseX: Int, mouseY: Int) {
+    override fun renderBackground(
+            matrixStack: MatrixStack,
+            x: Int,
+            y: Int,
+            mouseX: Int,
+            mouseY: Int
+    ) {
         bindTexture(MODID, "gui/$CRAFTER_PROXY_ID.png")
         blit(matrixStack, x, y, 0, 0, xSize, ySize)
     }
@@ -37,12 +46,8 @@ class CrafterProxyScreen(container: CrafterProxyContainer?, inventory: PlayerInv
 class CrafterProxyTileDataParameterClientListener : TileDataParameterClientListener<Boolean> {
     override fun onChanged(initial: Boolean, hasRoot: Boolean) {
         if (!hasRoot) {
-            BaseScreen.executeLater(
-                CrafterProxyScreen::class.java
-            ) { gui: CrafterProxyScreen ->
-                gui.addSideButton(
-                    CrafterProxyModeSideButton(gui)
-                )
+            BaseScreen.executeLater(CrafterProxyScreen::class.java) { gui: CrafterProxyScreen ->
+                gui.addSideButton(CrafterProxyModeSideButton(gui))
             }
         }
     }
@@ -50,7 +55,13 @@ class CrafterProxyTileDataParameterClientListener : TileDataParameterClientListe
 
 class CrafterProxyModeSideButton(screen: BaseScreen<CrafterProxyContainer?>?) : SideButton(screen) {
     override fun getTooltip(): String {
-        return I18n.get("sidebutton.refinedstorage.crafter_mode") + "\n" + TextFormatting.GRAY + I18n.get("sidebutton.refinedstorage.crafter_mode." + CrafterProxyBlockEntity.MODE.value)
+        return I18n.get("sidebutton.refinedstorage.crafter_mode") +
+                "\n" +
+                TextFormatting.GRAY +
+                I18n.get(
+                        "sidebutton.refinedstorage.crafter_mode." +
+                                CrafterProxyBlockEntity.MODE.value
+                )
     }
 
     override fun renderButtonIcon(matrixStack: MatrixStack, x: Int, y: Int) {
@@ -58,6 +69,9 @@ class CrafterProxyModeSideButton(screen: BaseScreen<CrafterProxyContainer?>?) : 
     }
 
     override fun onPress() {
-        TileDataManager.setParameter(CrafterProxyBlockEntity.MODE, CrafterProxyBlockEntity.MODE.value + 1)
+        TileDataManager.setParameter(
+                CrafterProxyBlockEntity.MODE,
+                CrafterProxyBlockEntity.MODE.value + 1
+        )
     }
 }
