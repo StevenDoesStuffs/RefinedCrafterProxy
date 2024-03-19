@@ -1,10 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "a a",
-    "bdc",
-    "a a"
-  ],
   "key": {
     "a": {
       "item": "refinedstorage:quartz_enriched_iron"
@@ -19,6 +14,11 @@
       "item": "refinedcrafterproxy:crafter_proxy"
     }
   },
+  "pattern": [
+    "a a",
+    "bdc",
+    "a a"
+  ],
   "result": {
     "item": "refinedcrafterproxy:crafter_proxy"
   }

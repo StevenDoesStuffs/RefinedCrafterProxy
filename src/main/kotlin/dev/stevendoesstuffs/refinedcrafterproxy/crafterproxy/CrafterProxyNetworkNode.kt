@@ -27,8 +27,6 @@ import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.ComponentUtils
 import net.minecraft.network.chat.MutableComponent
-import net.minecraft.network.chat.TextComponent
-import net.minecraft.network.chat.TranslatableComponent
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.Nameable
@@ -67,7 +65,7 @@ class CrafterProxyNetworkNode(level: Level, pos: BlockPos?) :
         private const val NBT_LOCKED = "Locked"
         private const val NBT_WAS_POWERED = "WasPowered"
         private val DEFAULT_NAME: MutableComponent =
-                TranslatableComponent("block.$MODID.$CRAFTER_PROXY_ID")
+                Component.translatable("block.$MODID.$CRAFTER_PROXY_ID")
         private val ID = ResourceLocation(MODID, CRAFTER_PROXY_ID)
         private const val CARD_UPDATE_CLEAR_DELAY = 1
         private const val CARD_UPDATE_SET_DELAY = 4
@@ -306,15 +304,15 @@ class CrafterProxyNetworkNode(level: Level, pos: BlockPos?) :
             }
 
             return if (facing != null) {
-                TranslatableComponent(level.getBlockState(facing.blockPos).block.descriptionId)
+                Component.translatable(level.getBlockState(facing.blockPos).block.descriptionId)
             } else DEFAULT_NAME
         }
 
         val name = getNameInternal()
         Config.CONFIG.getDisplayName(tier)?.let {
-            return TextComponent("")
+            return Component.literal("")
                     .append(name)
-                    .append(TextComponent(" "))
+                    .append(Component.literal(" "))
                     .append(ComponentUtils.wrapInSquareBrackets(it))
         }
         return name
@@ -416,9 +414,9 @@ class CrafterProxyNetworkNode(level: Level, pos: BlockPos?) :
         val itemstack = super.getItemStack()
         Config.CONFIG.getDisplayName(tier)?.let {
             itemstack.hoverName =
-                    TextComponent("")
+                    Component.literal("")
                             .append(DEFAULT_NAME)
-                            .append(TextComponent(" "))
+                            .append(Component.literal(" "))
                             .append(ComponentUtils.wrapInSquareBrackets(it))
         }
         return itemstack

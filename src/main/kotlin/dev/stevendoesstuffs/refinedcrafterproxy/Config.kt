@@ -5,7 +5,6 @@ import com.electronwill.nightconfig.core.Config
 import com.electronwill.nightconfig.core.ConfigSpec
 import net.minecraft.ChatFormatting
 import net.minecraft.network.chat.Component
-import net.minecraft.network.chat.TextComponent
 import net.minecraftforge.common.ForgeConfigSpec
 
 class Config(builder: ForgeConfigSpec.Builder) {
@@ -168,8 +167,8 @@ class Config(builder: ForgeConfigSpec.Builder) {
 
     fun getDisplayName(tier: String?): Component? {
         if (tier == null || tier == DEFAULT_TIER) return null
-        return tiers.get().get<Config?>(tier)?.let { TextComponent(it.get(DISPLAY_NAME)) }
-                ?: TextComponent("ERROR").withStyle(ChatFormatting.RED)
+        return tiers.get().get<Config?>(tier)?.let { Component.literal(it.get(DISPLAY_NAME)) }
+                ?: Component.literal("ERROR").withStyle(ChatFormatting.RED)
     }
 
     fun getCrafterEnergyUsage(tier: String?): Int {

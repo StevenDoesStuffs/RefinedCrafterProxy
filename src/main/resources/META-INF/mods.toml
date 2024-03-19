@@ -14,18 +14,18 @@ Allows multiple crafters to use the same pattern set.
 [[dependencies.refinedcrafterproxy]]
 modId = "forge"
 mandatory = true
-versionRange = "[40,)"
+versionRange = "[43,)"
 ordering = "NONE"
 side = "BOTH"
 [[dependencies.refinedcrafterproxy]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.18.2]"
+versionRange = "[1.19.2]"
 ordering = "NONE"
 side = "BOTH"
 [[dependencies.refinedcrafterproxy]]
 modId = "refinedstorage"
 mandatory = true
-versionRange = "[1.10,)"
+versionRange = "[1.11,)"
 ordering = "AFTER"
 side = "BOTH"

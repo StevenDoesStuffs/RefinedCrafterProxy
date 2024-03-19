@@ -19,8 +19,8 @@ import thedarkcolour.kotlinforforge.forge.registerObject
 object Registration {
     val ITEMS_REGISTRY = DeferredRegister.create(ForgeRegistries.ITEMS, MODID)
     val BLOCKS_REGISTRY = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID)
-    val BLOCK_ENTITIES_REGISTRY = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, MODID)
-    val CONTAINERS_REGISTRY = DeferredRegister.create(ForgeRegistries.CONTAINERS, MODID)
+    val BLOCK_ENTITIES_REGISTRY = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, MODID)
+    val CONTAINERS_REGISTRY = DeferredRegister.create(ForgeRegistries.MENU_TYPES, MODID)
     val LOOT_FUNCTIONS_REGISTRY = DeferredRegister.create(Registry.LOOT_FUNCTION_REGISTRY, MODID)
     val BAKED_MODEL_OVERRIDE_REGISTRY = BakedModelOverrideRegistry()
 

@@ -15,7 +15,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'kotlin'
 apply plugin: 'kotlinx-serialization'
 
-version = '2.1.1'
+version = '3.1.1'
 group = 'dev.stevendoesstuffs.refinedcrafterproxy'
 archivesBaseName = 'refinedcrafterproxy'
 
@@ -23,7 +23,7 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 minecraft {
     // Change to your preferred mappings
-    mappings channel: 'official', version: '1.18.2'
+    mappings channel: 'official', version: "${minecraft_version}"
     // Add your AccessTransformer
     // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 

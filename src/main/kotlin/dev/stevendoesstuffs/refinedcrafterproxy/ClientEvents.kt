@@ -1,12 +1,9 @@
 package dev.stevendoesstuffs.refinedcrafterproxy
 
-import com.refinedmods.refinedstorage.render.model.FullbrightBakedModel
 import dev.stevendoesstuffs.refinedcrafterproxy.crafterproxy.CrafterProxyScreen
 import net.minecraft.client.gui.screens.MenuScreens
-import net.minecraft.client.renderer.ItemBlockRenderTypes
-import net.minecraft.client.renderer.RenderType
 import net.minecraft.resources.ResourceLocation
-import net.minecraftforge.client.event.ModelBakeEvent
+import net.minecraftforge.client.event.ModelEvent
 import net.minecraftforge.eventbus.api.SubscribeEvent
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent
 import thedarkcolour.kotlinforforge.forge.MOD_BUS
@@ -18,29 +15,16 @@ object ClientEvents {
         MenuScreens.register(Registration.CRAFTER_PROXY_CONTAINER) { container, inventory, title ->
             CrafterProxyScreen(container, inventory, title)
         }
-        ItemBlockRenderTypes.setRenderLayer(Registration.CRAFTER_PROXY_BLOCK, RenderType.cutout())
-        val parent = "block/${Registration.CRAFTER_PROXY_ID}/cutouts/"
-        Registration.BAKED_MODEL_OVERRIDE_REGISTRY.add(
-                Registration.CRAFTER_PROXY_BLOCK.registryName
-        ) { base, _ ->
-            FullbrightBakedModel(
-                    base,
-                    true,
-                    ResourceLocation(RefinedCrafterProxy.MODID, parent + "side_connected"),
-                    ResourceLocation(RefinedCrafterProxy.MODID, parent + "top_connected")
-            )
-        }
     }
 
     @SubscribeEvent
-    fun onModelBake(e: ModelBakeEvent) {
-        FullbrightBakedModel.invalidateCache()
-        for (id in e.modelRegistry.keys) {
+    fun onModelBake(e: ModelEvent.BakingCompleted) {
+        for (id in e.models.keys) {
             val factory =
                     Registration.BAKED_MODEL_OVERRIDE_REGISTRY[
                             ResourceLocation(id.namespace, id.path)]
             if (factory != null) {
-                e.modelRegistry[id] = factory.create(e.modelRegistry[id], e.modelRegistry)
+                e.models.put(id, factory.create(e.models.get(id), e.models))
             }
         }
     }

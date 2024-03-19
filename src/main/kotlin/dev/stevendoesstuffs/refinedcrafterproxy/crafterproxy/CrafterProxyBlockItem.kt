@@ -6,7 +6,6 @@ import dev.stevendoesstuffs.refinedcrafterproxy.Registration
 import dev.stevendoesstuffs.refinedcrafterproxy.crafterproxy.CrafterProxyNetworkNode.Companion.NBT_TIER
 import net.minecraft.core.NonNullList
 import net.minecraft.network.chat.Component
-import net.minecraft.network.chat.TextComponent
 import net.minecraft.world.item.CreativeModeTab
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.TooltipFlag
@@ -26,13 +25,13 @@ class CrafterProxyBlockItem :
         val tag = stack.tag
         if (tag?.contains(NBT_TIER) == true) {
             Config.CONFIG.getDisplayName(tag.getString(NBT_TIER))?.let {
-                information.add(TextComponent("Tier: ").append(it))
+                information.add(Component.literal("Tier: ").append(it))
             }
         }
     }
 
     override fun fillItemCategory(creativeModeTab: CreativeModeTab, list: NonNullList<ItemStack>) {
-        if (!this.allowdedIn(creativeModeTab)) return
+        if (!this.allowedIn(creativeModeTab)) return
         list.add(ItemStack(this))
         for (tier in Config.CONFIG.getCustomTiers()) {
             val stack = ItemStack(this)

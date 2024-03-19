@@ -71,7 +71,7 @@ class CrafterProxyBlock : NetworkNodeBlock(BlockUtils.DEFAULT_ROCK_PROPERTIES) {
                 pos,
                 player,
                 {
-                    NetworkHooks.openGui(
+                    NetworkHooks.openScreen(
                             player as ServerPlayer,
                             BlockEntityMenuProvider<CrafterProxyBlockEntity>(
                                     (level.getBlockEntity(pos) as CrafterProxyBlockEntity)

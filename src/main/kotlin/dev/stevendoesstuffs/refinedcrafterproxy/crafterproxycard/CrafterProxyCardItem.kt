@@ -12,8 +12,6 @@ import net.minecraft.core.BlockPos
 import net.minecraft.core.Registry
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
-import net.minecraft.network.chat.TextComponent
-import net.minecraft.network.chat.TranslatableComponent
 import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.MinecraftServer
@@ -151,21 +149,21 @@ fun formatTranslate(
         vararg args: Any,
         color: ChatFormatting? = null
 ): MutableComponent {
-    var text: MutableComponent = TranslatableComponent(key, *args)
+    var text: MutableComponent = Component.translatable(key, *args)
     if (color != null) text = text.withStyle(color)
     return text
 }
 
 fun formatInt(i: Int, color: ChatFormatting? = null): MutableComponent {
-    return if (color != null) TextComponent(i.toString()).withStyle(color)
-    else TextComponent(i.toString())
+    return if (color != null) Component.literal(i.toString()).withStyle(color)
+    else Component.literal(i.toString())
 }
 
 fun formatDimName(dimension: String, color: ChatFormatting? = null): MutableComponent {
     val split = dimension.indexOf(':')
     var dimensionName = if (split >= 0) dimension.substring(split + 1) else dimension
 
-    if (dimensionName.isEmpty()) return TextComponent("!").withStyle(ChatFormatting.RED)
+    if (dimensionName.isEmpty()) return Component.literal("!").withStyle(ChatFormatting.RED)
 
     dimensionName =
             dimensionName
@@ -192,6 +190,6 @@ fun formatDimName(dimension: String, color: ChatFormatting? = null): MutableComp
         }
     }
 
-    return if (color != null) TextComponent(dimensionName).withStyle(color)
-    else TextComponent(dimensionName)
+    return if (color != null) Component.literal(dimensionName).withStyle(color)
+    else Component.literal(dimensionName)
 }
