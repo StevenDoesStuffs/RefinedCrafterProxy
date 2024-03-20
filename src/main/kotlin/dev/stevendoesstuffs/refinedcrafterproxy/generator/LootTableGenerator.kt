@@ -1,15 +1,11 @@
 package dev.stevendoesstuffs.refinedcrafterproxy.generator
 
-import com.mojang.datafixers.util.Pair
 import dev.stevendoesstuffs.refinedcrafterproxy.Registration
 import dev.stevendoesstuffs.refinedcrafterproxy.crafterproxy.CrafterProxyLootFunction
-import java.util.function.BiConsumer
-import java.util.function.Consumer
-import java.util.function.Supplier
-import net.minecraft.data.DataGenerator
-import net.minecraft.data.loot.BlockLoot
+import net.minecraft.data.PackOutput
+import net.minecraft.data.loot.BlockLootSubProvider
 import net.minecraft.data.loot.LootTableProvider
-import net.minecraft.resources.ResourceLocation
+import net.minecraft.world.flag.FeatureFlags
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.storage.loot.*
 import net.minecraft.world.level.storage.loot.entries.LootItem
@@ -17,29 +13,22 @@ import net.minecraft.world.level.storage.loot.parameters.*
 import net.minecraft.world.level.storage.loot.predicates.ExplosionCondition
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue
 
-class LootTableGenerator(gen: DataGenerator) : LootTableProvider(gen) {
+class LootTableGenerator(gen: PackOutput) :
+        LootTableProvider(
+                gen,
+                emptySet(),
+                listOf(
+                        LootTableProvider.SubProviderEntry(
+                                ::CrafterProxyBlockLootSubProvider,
+                                LootContextParamSets.BLOCK
+                        )
+                )
+        ) {
 
-    override fun getTables():
-            MutableList<
-                    Pair<
-                            Supplier<Consumer<BiConsumer<ResourceLocation, LootTable.Builder>>>,
-                            LootContextParamSet>> {
-        return mutableListOf(
-                Pair.of(Supplier { CrafterProxyBlockLoot() }, LootContextParamSets.BLOCK)
-        )
-    }
+    private class CrafterProxyBlockLootSubProvider :
+            BlockLootSubProvider(emptySet(), FeatureFlags.REGISTRY.allFlags()) {
 
-    override fun validate(
-            map: MutableMap<ResourceLocation, LootTable>,
-            validationtracker: ValidationContext
-    ) {}
-
-    override fun getName(): String {
-        return "Refined Crafter Proxy Loot Tables"
-    }
-
-    private class CrafterProxyBlockLoot : BlockLoot() {
-        override fun addTables() {
+        override fun generate() {
             val block = Registration.CRAFTER_PROXY_BLOCK
             val builder = CrafterProxyLootFunction.builder()
             add(

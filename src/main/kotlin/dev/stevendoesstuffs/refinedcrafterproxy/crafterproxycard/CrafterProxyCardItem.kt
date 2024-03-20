@@ -5,11 +5,10 @@ import com.refinedmods.refinedstorage.apiimpl.API
 import dev.stevendoesstuffs.refinedcrafterproxy.RefinedCrafterProxy.MODID
 import dev.stevendoesstuffs.refinedcrafterproxy.Registration
 import dev.stevendoesstuffs.refinedcrafterproxy.Registration.CRAFTER_PROXY_CARD_ID
-import dev.stevendoesstuffs.refinedcrafterproxy.Registration.CRAFTER_PROXY_TAB
 import java.util.Locale
 import net.minecraft.ChatFormatting
 import net.minecraft.core.BlockPos
-import net.minecraft.core.Registry
+import net.minecraft.core.registries.Registries
 import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.MutableComponent
 import net.minecraft.resources.ResourceKey
@@ -25,7 +24,7 @@ import net.minecraft.world.item.TooltipFlag
 import net.minecraft.world.item.context.UseOnContext
 import net.minecraft.world.level.Level
 
-class CrafterProxyCardItem : Item(Properties().stacksTo(1).tab(CRAFTER_PROXY_TAB)) {
+class CrafterProxyCardItem : Item(Properties().stacksTo(1)) {
     companion object {
         const val BOUND_DIM = "BoundDim"
         const val BOUND_X = "BoundX"
@@ -52,8 +51,7 @@ class CrafterProxyCardItem : Item(Properties().stacksTo(1).tab(CRAFTER_PROXY_TAB
 
         val pos = BlockPos(x, y, z)
         val dimKey =
-                ResourceKey.create(Registry.DIMENSION_REGISTRY, ResourceLocation(dimName))
-                        ?: return null
+                ResourceKey.create(Registries.DIMENSION, ResourceLocation(dimName)) ?: return null
 
         return Pair(dimKey, pos)
     }
@@ -105,7 +103,7 @@ class CrafterProxyCardItem : Item(Properties().stacksTo(1).tab(CRAFTER_PROXY_TAB
             player: Player,
             hand: InteractionHand
     ): InteractionResultHolder<ItemStack> {
-        if (player.level.isClientSide || !player.isCrouching) return super.use(level, player, hand)
+        if (level.isClientSide || !player.isCrouching) return super.use(level, player, hand)
         val stack = player.getItemInHand(hand)
         stack.tag = null
         player.displayClientMessage(

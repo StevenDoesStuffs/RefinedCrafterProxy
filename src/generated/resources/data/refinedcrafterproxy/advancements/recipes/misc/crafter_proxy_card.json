@@ -6,7 +6,7 @@
         "items": [
           {
             "items": [
-              "refinedstorage:advanced_processor"
+              "refinedstorage:improved_processor"
             ]
           }
         ]
@@ -15,7 +15,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "refinedcrafterproxy:crafter_proxy"
+        "recipe": "refinedcrafterproxy:crafter_proxy_card"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -28,7 +28,8 @@
   ],
   "rewards": {
     "recipes": [
-      "refinedcrafterproxy:crafter_proxy"
+      "refinedcrafterproxy:crafter_proxy_card"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

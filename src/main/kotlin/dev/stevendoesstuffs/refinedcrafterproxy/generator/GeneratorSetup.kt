@@ -9,8 +9,8 @@ object GeneratorSetup {
     @SubscribeEvent
     fun gatherData(event: GatherDataEvent) {
         val generator = event.generator
-        generator.addProvider(event.includeClient(), LanguageGenerator(generator))
-        generator.addProvider(event.includeServer(), RecipeGenerator(generator))
-        generator.addProvider(event.includeServer(), LootTableGenerator(generator))
+        generator.addProvider(event.includeClient(), ::LanguageGenerator)
+        generator.addProvider(event.includeServer(), ::RecipeGenerator)
+        generator.addProvider(event.includeServer(), ::LootTableGenerator)
     }
 }

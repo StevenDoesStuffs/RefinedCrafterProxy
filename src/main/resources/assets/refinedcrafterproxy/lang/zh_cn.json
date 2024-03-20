@@ -1,7 +1,7 @@
 {
   "block.refinedcrafterproxy.crafter_proxy": "装配室代理",
   "item.refinedcrafterproxy.crafter_proxy_card": "装配室代理连接卡",
-  "itemGroup.refinedcrafterproxy_tab": "精致存储装配室代理",
+  "item_group.refinedcrafterproxy.general": "精致存储装配室代理",
   "refinedcrafterproxy.crafter_proxy_card.clear": "选择已清除",
   "refinedcrafterproxy.crafter_proxy_card.select": "已选择方块",
   "refinedcrafterproxy.crafter_proxy_card.status.connected": "已连接",

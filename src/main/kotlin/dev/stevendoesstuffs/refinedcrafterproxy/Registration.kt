@@ -3,8 +3,10 @@ package dev.stevendoesstuffs.refinedcrafterproxy
 import com.refinedmods.refinedstorage.render.BakedModelOverrideRegistry
 import dev.stevendoesstuffs.refinedcrafterproxy.RefinedCrafterProxy.MODID
 import dev.stevendoesstuffs.refinedcrafterproxy.crafterproxy.*
+import dev.stevendoesstuffs.refinedcrafterproxy.crafterproxy.CrafterProxyNetworkNode.Companion.NBT_TIER
 import dev.stevendoesstuffs.refinedcrafterproxy.crafterproxycard.CrafterProxyCardItem
-import net.minecraft.core.Registry
+import net.minecraft.core.registries.Registries
+import net.minecraft.network.chat.Component
 import net.minecraft.world.inventory.MenuType
 import net.minecraft.world.item.CreativeModeTab
 import net.minecraft.world.item.ItemStack
@@ -21,11 +23,13 @@ object Registration {
     val BLOCKS_REGISTRY = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID)
     val BLOCK_ENTITIES_REGISTRY = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, MODID)
     val CONTAINERS_REGISTRY = DeferredRegister.create(ForgeRegistries.MENU_TYPES, MODID)
-    val LOOT_FUNCTIONS_REGISTRY = DeferredRegister.create(Registry.LOOT_FUNCTION_REGISTRY, MODID)
+    val LOOT_FUNCTIONS_REGISTRY = DeferredRegister.create(Registries.LOOT_FUNCTION_TYPE, MODID)
+    val CREATIVE_TABS_REGISTRY = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID)
     val BAKED_MODEL_OVERRIDE_REGISTRY = BakedModelOverrideRegistry()
 
     const val CRAFTER_PROXY_ID = "crafter_proxy"
     const val CRAFTER_PROXY_CARD_ID = "crafter_proxy_card"
+    const val CREATIVE_TAB_GENERAL_ID = "general"
 
     val CRAFTER_PROXY_CARD by
             ITEMS_REGISTRY.registerObject(CRAFTER_PROXY_CARD_ID) { CrafterProxyCardItem() }
@@ -63,18 +67,33 @@ object Registration {
                 LootItemFunctionType(CrafterProxyLootFunction.Serializer())
             }
 
+    val CRAFTER_PROXY_TAB by
+            CREATIVE_TABS_REGISTRY.registerObject(CREATIVE_TAB_GENERAL_ID) {
+                CreativeModeTab.builder()
+                        .title(
+                                Component.translatable(
+                                        "item_group.${MODID}.${CREATIVE_TAB_GENERAL_ID}"
+                                )
+                        )
+                        .icon() { ItemStack(CRAFTER_PROXY_CARD) }
+                        .displayItems() { _, output ->
+                            output.accept(ItemStack(CRAFTER_PROXY_CARD))
+                            output.accept(ItemStack(CRAFTER_PROXY_BLOCK_ITEM))
+                            for (tier in Config.CONFIG.getCustomTiers()) {
+                                val stack = ItemStack(CRAFTER_PROXY_BLOCK_ITEM)
+                                stack.orCreateTag.putString(NBT_TIER, tier)
+                                output.accept(stack)
+                            }
+                        }
+                        .build()
+            }
+
     fun registerAll() {
         ITEMS_REGISTRY.register(MOD_BUS)
         BLOCKS_REGISTRY.register(MOD_BUS)
         BLOCK_ENTITIES_REGISTRY.register(MOD_BUS)
         CONTAINERS_REGISTRY.register(MOD_BUS)
         LOOT_FUNCTIONS_REGISTRY.register(MOD_BUS)
+        CREATIVE_TABS_REGISTRY.register(MOD_BUS)
     }
-
-    val CRAFTER_PROXY_TAB: CreativeModeTab =
-            object : CreativeModeTab("${MODID}_tab") {
-                override fun makeIcon(): ItemStack {
-                    return ItemStack(CRAFTER_PROXY_CARD)
-                }
-            }
 }

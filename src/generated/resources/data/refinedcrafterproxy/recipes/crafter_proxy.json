@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
   "key": {
     "a": {
       "item": "refinedstorage:quartz_enriched_iron"
@@ -21,5 +22,6 @@
   ],
   "result": {
     "item": "refinedcrafterproxy:crafter_proxy"
-  }
+  },
+  "show_notification": true
 }

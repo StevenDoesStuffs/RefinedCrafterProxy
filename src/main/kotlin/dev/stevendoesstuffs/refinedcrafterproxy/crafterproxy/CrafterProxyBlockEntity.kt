@@ -3,11 +3,13 @@ package dev.stevendoesstuffs.refinedcrafterproxy.crafterproxy
 import com.refinedmods.refinedstorage.blockentity.NetworkNodeBlockEntity
 import com.refinedmods.refinedstorage.blockentity.data.BlockEntitySynchronizationParameter
 import com.refinedmods.refinedstorage.blockentity.data.BlockEntitySynchronizationSpec
+import dev.stevendoesstuffs.refinedcrafterproxy.RefinedCrafterProxy.MODID
 import dev.stevendoesstuffs.refinedcrafterproxy.Registration
 import dev.stevendoesstuffs.refinedcrafterproxy.Registration.CRAFTER_PROXY_BLOCK_ENTITY
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.network.syncher.EntityDataSerializers
+import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraftforge.common.capabilities.Capability
@@ -41,12 +43,14 @@ class CrafterProxyBlockEntity(pos: BlockPos, state: BlockState?) :
     companion object {
         val MODE =
                 BlockEntitySynchronizationParameter(
+                        ResourceLocation(MODID, "crafter_mode"),
                         EntityDataSerializers.INT,
                         CrafterProxyNetworkNode.CrafterMode.IGNORE.ordinal,
                         { t: CrafterProxyBlockEntity -> t.node.getMode().ordinal }
                 ) { t, v -> t.node.setMode(CrafterProxyNetworkNode.CrafterMode.getById(v!!)) }
         private val HAS_ROOT =
                 BlockEntitySynchronizationParameter(
+                        ResourceLocation(MODID, "crafter_has_root"),
                         EntityDataSerializers.BOOLEAN,
                         false,
                         { t: CrafterProxyBlockEntity ->

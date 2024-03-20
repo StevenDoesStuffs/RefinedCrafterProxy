@@ -3,10 +3,11 @@ package dev.stevendoesstuffs.refinedcrafterproxy.generator
 import dev.stevendoesstuffs.refinedcrafterproxy.RefinedCrafterProxy.MODID
 import dev.stevendoesstuffs.refinedcrafterproxy.Registration
 import dev.stevendoesstuffs.refinedcrafterproxy.Registration.CRAFTER_PROXY_CARD_ID
-import net.minecraft.data.DataGenerator
+import dev.stevendoesstuffs.refinedcrafterproxy.Registration.CREATIVE_TAB_GENERAL_ID
+import net.minecraft.data.PackOutput
 import net.minecraftforge.common.data.LanguageProvider
 
-class LanguageGenerator(gen: DataGenerator) : LanguageProvider(gen, MODID, "en_us") {
+class LanguageGenerator(gen: PackOutput) : LanguageProvider(gen, MODID, "en_us") {
     override fun addTranslations() {
         add(Registration.CRAFTER_PROXY_CARD, "Crafter Proxy Link Card")
         add("$MODID.$CRAFTER_PROXY_CARD_ID.select", "Block selected")
@@ -22,6 +23,6 @@ class LanguageGenerator(gen: DataGenerator) : LanguageProvider(gen, MODID, "en_u
 
         add(Registration.CRAFTER_PROXY_BLOCK_ITEM, "Crafter Proxy")
 
-        add("itemGroup.${MODID}_tab", "Refined Crafter Proxy")
+        add("item_group.$MODID.$CREATIVE_TAB_GENERAL_ID", "Refined Crafter Proxy")
     }
 }
