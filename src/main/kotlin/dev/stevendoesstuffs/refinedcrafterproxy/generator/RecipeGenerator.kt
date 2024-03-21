@@ -3,17 +3,16 @@ package dev.stevendoesstuffs.refinedcrafterproxy.generator
 import com.refinedmods.refinedstorage.RSItems
 import com.refinedmods.refinedstorage.item.ProcessorItem
 import dev.stevendoesstuffs.refinedcrafterproxy.Registration
-import java.util.function.Consumer
 import net.minecraft.data.PackOutput
-import net.minecraft.data.recipes.FinishedRecipe
 import net.minecraft.data.recipes.RecipeCategory
+import net.minecraft.data.recipes.RecipeOutput
 import net.minecraft.data.recipes.RecipeProvider
 import net.minecraft.data.recipes.ShapedRecipeBuilder
 import net.minecraft.world.item.Items
 
 class RecipeGenerator(gen: PackOutput) : RecipeProvider(gen) {
 
-    override fun buildRecipes(consumer: Consumer<FinishedRecipe>) {
+    override fun buildRecipes(output: RecipeOutput) {
         val improvedProcessor = RSItems.PROCESSORS[ProcessorItem.Type.IMPROVED]!!.get()
         val advancedProcessor = RSItems.PROCESSORS[ProcessorItem.Type.ADVANCED]!!.get()
 
@@ -25,7 +24,7 @@ class RecipeGenerator(gen: PackOutput) : RecipeProvider(gen) {
                 .define('b', Items.PAPER)
                 .define('c', improvedProcessor)
                 .unlockedBy("has_part", has(improvedProcessor))
-                .save(consumer)
+                .save(output)
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, Registration.CRAFTER_PROXY_BLOCK_ITEM)
                 .pattern("a a")
@@ -36,6 +35,6 @@ class RecipeGenerator(gen: PackOutput) : RecipeProvider(gen) {
                 .define('c', advancedProcessor)
                 .define('d', Registration.CRAFTER_PROXY_BLOCK_ITEM)
                 .unlockedBy("has_part", has(advancedProcessor))
-                .save(consumer)
+                .save(output)
     }
 }

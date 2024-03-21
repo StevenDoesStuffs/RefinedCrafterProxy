@@ -30,14 +30,16 @@ class LootTableGenerator(gen: PackOutput) :
 
         override fun generate() {
             val block = Registration.CRAFTER_PROXY_BLOCK
-            val builder = CrafterProxyLootFunction.builder()
             add(
                     block,
                     LootTable.lootTable()
                             .withPool(
                                     LootPool.lootPool()
                                             .setRolls(ConstantValue.exactly(1.0f))
-                                            .add(LootItem.lootTableItem(block).apply(builder))
+                                            .add(
+                                                    LootItem.lootTableItem(block)
+                                                            .apply(::CrafterProxyLootFunction)
+                                            )
                                             .`when`(ExplosionCondition.survivesExplosion())
                             )
             )

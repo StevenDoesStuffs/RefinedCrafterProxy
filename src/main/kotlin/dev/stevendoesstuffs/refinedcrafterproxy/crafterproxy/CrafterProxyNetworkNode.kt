@@ -34,10 +34,10 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.entity.BlockEntity
-import net.minecraftforge.fluids.capability.IFluidHandler
-import net.minecraftforge.items.IItemHandler
-import net.minecraftforge.items.IItemHandlerModifiable
-import net.minecraftforge.items.wrapper.CombinedInvWrapper
+import net.neoforged.neoforge.fluids.capability.IFluidHandler
+import net.neoforged.neoforge.items.IItemHandler
+import net.neoforged.neoforge.items.IItemHandlerModifiable
+import net.neoforged.neoforge.items.wrapper.CombinedInvWrapper
 
 class CrafterProxyNetworkNode(level: Level, pos: BlockPos?) :
         NetworkNode(level, pos), ICraftingPatternContainer {
@@ -234,12 +234,20 @@ class CrafterProxyNetworkNode(level: Level, pos: BlockPos?) :
 
     override fun getConnectedInventory(): IItemHandler? {
         val proxy = rootContainer ?: return null
-        return LevelUtils.getItemHandler(proxy.facingBlockEntity, proxy.direction.opposite)
+        return LevelUtils.getItemHandler(
+                level,
+                proxy.getPosition().relative(proxy.getDirection()),
+                proxy.getDirection().getOpposite()
+        )
     }
 
     override fun getConnectedFluidInventory(): IFluidHandler? {
         val proxy = rootContainer ?: return null
-        return LevelUtils.getFluidHandler(proxy.facingBlockEntity, proxy.direction.opposite)
+        return LevelUtils.getFluidHandler(
+                level,
+                proxy.getPosition().relative(proxy.getDirection()),
+                proxy.getDirection().getOpposite()
+        )
     }
 
     override fun getConnectedBlockEntity(): BlockEntity? {
@@ -420,5 +428,9 @@ class CrafterProxyNetworkNode(level: Level, pos: BlockPos?) :
                             .append(ComponentUtils.wrapInSquareBrackets(it))
         }
         return itemstack
+    }
+
+    fun getProxyCardInv(): IItemHandler {
+        return cardInventory
     }
 }

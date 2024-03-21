@@ -8,7 +8,6 @@ import com.refinedmods.refinedstorage.util.BlockUtils
 import com.refinedmods.refinedstorage.util.NetworkUtils
 import dev.stevendoesstuffs.refinedcrafterproxy.crafterproxy.CrafterProxyNetworkNode.Companion.NBT_TIER
 import net.minecraft.core.BlockPos
-import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.InteractionResult
 import net.minecraft.world.entity.LivingEntity
@@ -18,7 +17,6 @@ import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.phys.BlockHitResult
-import net.minecraftforge.network.NetworkHooks
 
 class CrafterProxyBlock : NetworkNodeBlock(BlockUtils.DEFAULT_ROCK_PROPERTIES) {
 
@@ -71,8 +69,7 @@ class CrafterProxyBlock : NetworkNodeBlock(BlockUtils.DEFAULT_ROCK_PROPERTIES) {
                 pos,
                 player,
                 {
-                    NetworkHooks.openScreen(
-                            player as ServerPlayer,
+                    player.openMenu(
                             BlockEntityMenuProvider<CrafterProxyBlockEntity>(
                                     (level.getBlockEntity(pos) as CrafterProxyBlockEntity)
                                             .node

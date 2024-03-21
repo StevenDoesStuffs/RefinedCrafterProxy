@@ -1,26 +1,16 @@
 package dev.stevendoesstuffs.refinedcrafterproxy.crafterproxy
 
-import com.google.gson.JsonDeserializationContext
-import com.google.gson.JsonObject
 import dev.stevendoesstuffs.refinedcrafterproxy.Registration
 import dev.stevendoesstuffs.refinedcrafterproxy.crafterproxy.CrafterProxyNetworkNode.Companion.NBT_TIER
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.storage.loot.LootContext
-import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction
+import net.minecraft.world.level.storage.loot.functions.LootItemFunction
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams
-import net.minecraft.world.level.storage.loot.predicates.LootItemCondition
 
-class CrafterProxyLootFunction private constructor(conditions: Array<out LootItemCondition>) :
-        LootItemConditionalFunction(conditions) {
+class CrafterProxyLootFunction : LootItemFunction {
 
-    companion object {
-        fun builder(): Builder<*> {
-            return simpleBuilder { conditions -> CrafterProxyLootFunction(conditions) }
-        }
-    }
-
-    override fun run(stack: ItemStack, lootContext: LootContext): ItemStack {
+    override fun apply(stack: ItemStack, lootContext: LootContext): ItemStack {
         val blockEntity = lootContext.getParamOrNull(LootContextParams.BLOCK_ENTITY)
         val removedNode = (blockEntity as CrafterProxyBlockEntity).removedNode ?: blockEntity.node
         if (removedNode.getDisplayName() != null) {
@@ -32,15 +22,5 @@ class CrafterProxyLootFunction private constructor(conditions: Array<out LootIte
 
     override fun getType(): LootItemFunctionType {
         return Registration.CRAFTER_PROXY_LOOT_FUNCTION
-    }
-
-    class Serializer : LootItemConditionalFunction.Serializer<CrafterProxyLootFunction?>() {
-        override fun deserialize(
-                obj: JsonObject,
-                deserializationContext: JsonDeserializationContext,
-                conditions: Array<out LootItemCondition>
-        ): CrafterProxyLootFunction {
-            return CrafterProxyLootFunction(conditions)
-        }
     }
 }

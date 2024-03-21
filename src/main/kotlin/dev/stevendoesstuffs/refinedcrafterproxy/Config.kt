@@ -5,9 +5,9 @@ import com.electronwill.nightconfig.core.Config
 import com.electronwill.nightconfig.core.ConfigSpec
 import net.minecraft.ChatFormatting
 import net.minecraft.network.chat.Component
-import net.minecraftforge.common.ForgeConfigSpec
+import net.neoforged.neoforge.common.ModConfigSpec
 
-class Config(builder: ForgeConfigSpec.Builder) {
+class Config(builder: ModConfigSpec.Builder) {
     companion object {
         private const val DEFAULT_TIER: String = "default"
         private const val TIERS: String = "tiers"
@@ -21,11 +21,11 @@ class Config(builder: ForgeConfigSpec.Builder) {
 
         @JvmStatic val CONFIG: dev.stevendoesstuffs.refinedcrafterproxy.Config
 
-        @JvmStatic val CONFIG_SPEC: ForgeConfigSpec
+        @JvmStatic val CONFIG_SPEC: ModConfigSpec
 
         init {
             val (config, configSpec) =
-                    ForgeConfigSpec.Builder().configure { builder: ForgeConfigSpec.Builder ->
+                    ModConfigSpec.Builder().configure { builder: ModConfigSpec.Builder ->
                         Config(builder)
                     }
             CONFIG = config
@@ -33,7 +33,7 @@ class Config(builder: ForgeConfigSpec.Builder) {
         }
     }
 
-    private val tiers: ForgeConfigSpec.ConfigValue<Config>
+    private val tiers: ModConfigSpec.ConfigValue<Config>
 
     init {
         builder.comment(
@@ -49,7 +49,7 @@ class Config(builder: ForgeConfigSpec.Builder) {
                             defaultTier.setComment(
                                     DISPLAY_NAME,
                                     """
-                        The display name of the tier. 
+                        The display name of the tier.
                         If nonempty, the name of the block will be formatted as `Crafter Proxy [{displayName}]`.
                     """.trimIndent()
                             )
@@ -58,7 +58,7 @@ class Config(builder: ForgeConfigSpec.Builder) {
                             defaultTier.setComment(
                                     CRAFTER_ENERGY_USAGE,
                                     """
-                        The energy used for the crafter. 
+                        The energy used for the crafter.
                         Must be an integer >= 0.
                     """.trimIndent()
                             )
@@ -67,7 +67,7 @@ class Config(builder: ForgeConfigSpec.Builder) {
                             defaultTier.setComment(
                                     PATTERNS_ENERGY_USAGE,
                                     """
-                        The energy used for every pattern in the crafter. 
+                        The energy used for every pattern in the crafter.
                         Must be an integer >= 0.
                     """.trimIndent()
                             )
@@ -87,7 +87,7 @@ class Config(builder: ForgeConfigSpec.Builder) {
                             defaultTier.setComment(
                                     UPDATE_INTERVALS,
                                     """
-                        The update interval of the crafter, 
+                        The update interval of the crafter,
                         where the (zero-indexed) index in the list is the number of speed upgrades.
                         Must be a list of integers of length 5 with elements > 0.
                     """.trimIndent()
@@ -97,7 +97,7 @@ class Config(builder: ForgeConfigSpec.Builder) {
                             defaultTier.setComment(
                                     MAXIMUM_SUCCESSFUL_CRAFTING_UPDATES,
                                     """
-                        The maximum number of successful crafting updates per crafter update, 
+                        The maximum number of successful crafting updates per crafter update,
                         where the (zero-indexed) index in the list is the number of speed upgrades.
                         Must be a list of integers of length 5 with elements > 0.
                     """.trimIndent()

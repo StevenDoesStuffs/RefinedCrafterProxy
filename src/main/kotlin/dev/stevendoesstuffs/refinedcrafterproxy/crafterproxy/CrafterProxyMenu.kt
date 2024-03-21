@@ -3,7 +3,7 @@ package dev.stevendoesstuffs.refinedcrafterproxy.crafterproxy
 import com.refinedmods.refinedstorage.container.BaseContainerMenu
 import dev.stevendoesstuffs.refinedcrafterproxy.Registration
 import net.minecraft.world.entity.player.Player
-import net.minecraftforge.items.SlotItemHandler
+import net.neoforged.neoforge.items.SlotItemHandler
 
 class CrafterProxyMenu(windowId: Int, player: Player, tile: CrafterProxyBlockEntity) :
         BaseContainerMenu(Registration.CRAFTER_PROXY_CONTAINER, tile, player, windowId) {

@@ -5,7 +5,7 @@ import dev.stevendoesstuffs.refinedcrafterproxy.Registration
 import dev.stevendoesstuffs.refinedcrafterproxy.Registration.CRAFTER_PROXY_CARD_ID
 import dev.stevendoesstuffs.refinedcrafterproxy.Registration.CREATIVE_TAB_GENERAL_ID
 import net.minecraft.data.PackOutput
-import net.minecraftforge.common.data.LanguageProvider
+import net.neoforged.neoforge.common.data.LanguageProvider
 
 class LanguageGenerator(gen: PackOutput) : LanguageProvider(gen, MODID, "en_us") {
     override fun addTranslations() {

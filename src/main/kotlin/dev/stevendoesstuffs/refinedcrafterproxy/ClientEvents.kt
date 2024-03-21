@@ -1,20 +1,17 @@
 package dev.stevendoesstuffs.refinedcrafterproxy
 
 import dev.stevendoesstuffs.refinedcrafterproxy.crafterproxy.CrafterProxyScreen
-import net.minecraft.client.gui.screens.MenuScreens
 import net.minecraft.resources.ResourceLocation
-import net.minecraftforge.client.event.ModelEvent
-import net.minecraftforge.eventbus.api.SubscribeEvent
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent
-import thedarkcolour.kotlinforforge.forge.MOD_BUS
+import net.neoforged.bus.api.SubscribeEvent
+import net.neoforged.neoforge.client.event.ModelEvent
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent
+import thedarkcolour.kotlinforforge.neoforge.forge.MOD_BUS
 
 object ClientEvents {
+
     @SubscribeEvent
-    @Suppress("UNUSED_PARAMETER")
-    fun init(event: FMLClientSetupEvent) {
-        MenuScreens.register(Registration.CRAFTER_PROXY_CONTAINER) { container, inventory, title ->
-            CrafterProxyScreen(container, inventory, title)
-        }
+    fun registerScreens(event: RegisterMenuScreensEvent) {
+        event.register(Registration.CRAFTER_PROXY_CONTAINER, ::CrafterProxyScreen)
     }
 
     @SubscribeEvent
@@ -30,7 +27,7 @@ object ClientEvents {
     }
 
     fun addListeners() {
-        MOD_BUS.addListener(ClientEvents::init)
-        MOD_BUS.addListener(ClientEvents::onModelBake)
+        MOD_BUS.addListener(::registerScreens)
+        MOD_BUS.addListener(::onModelBake)
     }
 }

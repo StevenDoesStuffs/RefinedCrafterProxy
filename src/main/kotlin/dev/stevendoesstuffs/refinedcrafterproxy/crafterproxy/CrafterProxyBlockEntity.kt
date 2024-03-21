@@ -12,10 +12,7 @@ import net.minecraft.network.syncher.EntityDataSerializers
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.state.BlockState
-import net.minecraftforge.common.capabilities.Capability
-import net.minecraftforge.common.capabilities.ForgeCapabilities
-import net.minecraftforge.common.util.LazyOptional
-import net.minecraftforge.items.IItemHandler
+import net.neoforged.neoforge.items.IItemHandler
 
 class CrafterProxyBlockEntity(pos: BlockPos, state: BlockState?) :
         NetworkNodeBlockEntity<CrafterProxyNetworkNode>(
@@ -25,19 +22,16 @@ class CrafterProxyBlockEntity(pos: BlockPos, state: BlockState?) :
                 SPEC,
                 CrafterProxyNetworkNode::class.java
         ) {
-    private val cardCapability = LazyOptional.of<IItemHandler?> { node.cardInventory }
 
     override fun createNode(level: Level, pos: BlockPos): CrafterProxyNetworkNode {
         return CrafterProxyNetworkNode(level, pos)
     }
 
-    override fun <T> getCapability(cap: Capability<T>, direction: Direction?): LazyOptional<T> {
-        return if (cap === ForgeCapabilities.ITEM_HANDLER &&
-                        direction != null &&
-                        direction != this.node.direction
-        ) {
-            cardCapability.cast()
-        } else super.getCapability(cap, direction)
+    fun getProxyCardInv(direction: Direction?): IItemHandler? {
+        if (direction != null && direction.equals(getNode().getDirection())) {
+            return getNode().getProxyCardInv()
+        }
+        return null
     }
 
     companion object {

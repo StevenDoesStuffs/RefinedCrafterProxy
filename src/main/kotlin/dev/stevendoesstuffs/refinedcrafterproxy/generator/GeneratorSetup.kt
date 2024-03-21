@@ -1,8 +1,8 @@
 package dev.stevendoesstuffs.refinedcrafterproxy.generator
 
-import net.minecraftforge.data.event.GatherDataEvent
-import net.minecraftforge.eventbus.api.SubscribeEvent
-import net.minecraftforge.fml.common.Mod
+import net.neoforged.bus.api.SubscribeEvent
+import net.neoforged.fml.common.Mod
+import net.neoforged.neoforge.data.event.GatherDataEvent
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 object GeneratorSetup {
