@@ -19,12 +19,17 @@ Notes:
   If your items aren't being distributed evenly, this may be why. 
 - For modpack creators: if you have a mod like [Extra Storage](https://github.com/Edivad99/ExtraStorage/) which adds crafters with custom performance characteristics,
   you can add proxy variants of those crafters in the RefinedCrafterProxy config in order to match the speed for proper load balancing. 
-  These will not have crafting recipes by default. 
+  These will not have crafting recipes by default.
 
 ## Downloads
 
 Available on [Modrinth](https://modrinth.com/mod/refinedcrafterproxy)
 and [Curseforge](https://www.curseforge.com/minecraft/mc-mods/refined-crafter-proxy).
+
+## Screenshots
+
+![2024-03-21_00 07 29](https://github.com/StevenDoesStuffs/RefinedCrafterProxy/assets/13265529/2d326981-1069-4f1b-ae4a-15dd588b50ff)
+![2024-03-21_00 09 37](https://github.com/StevenDoesStuffs/RefinedCrafterProxy/assets/13265529/ab8aa0cb-a672-4006-8d39-93a443262b5c)
 
 ## Redistribution
 
