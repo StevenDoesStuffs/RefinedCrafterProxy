@@ -33,7 +33,7 @@ and [Curseforge](https://www.curseforge.com/minecraft/mc-mods/refined-crafter-pr
 
 ## Redistribution
 
-This project is licensed under the AGPLv3. See LICENSE.
+This project is licensed under the LGPLv3. See LICENSE.
 
 ## Acknowledgements
 
