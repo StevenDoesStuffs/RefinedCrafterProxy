@@ -29,7 +29,7 @@ and [Curseforge](https://www.curseforge.com/minecraft/mc-mods/refined-crafter-pr
 ## Screenshots
 
 ![2024-03-21_00 07 29](https://github.com/StevenDoesStuffs/RefinedCrafterProxy/assets/13265529/2d326981-1069-4f1b-ae4a-15dd588b50ff)
-![2024-03-21_00 09 37](https://github.com/StevenDoesStuffs/RefinedCrafterProxy/assets/13265529/ab8aa0cb-a672-4006-8d39-93a443262b5c)
+![2024-03-21_00 09 37](https://github.com/StevenDoesStuffs/RefinedCrafterProxy/assets/13265529/fb1b55b6-23bc-4ae9-b9da-73d15c7f2e71)
 
 ## Redistribution
 
